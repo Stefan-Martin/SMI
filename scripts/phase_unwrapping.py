@@ -2,6 +2,7 @@ import os
 import numbers
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib
 
 
 def find_jump_points(signal: np.array, thresh_std: float = 3):
@@ -41,6 +42,54 @@ def find_jump_points(signal: np.array, thresh_std: float = 3):
                 pulse_train[jump_point] = 1 * jump_sign
                 start = None
     return pulse_train, np.array(jump_points), np.array(jump_signs)
+
+
+def find_peaks_and_valleys(signal: np.array,
+                           jump_points: np.array):
+    """Find the peaks and valleys in the SMI signal.
+
+    A peak is the argmax of the SMI signal between two jump points, and a valley
+    is the argmin of the SMI signal between peaks.
+
+    Args:
+        signal (np.array): NORMALIZED SMI signal
+        jump_points (np.array): Jump points found in signal.
+        jump_signs (np.array): Array parralel to jump_points representing
+            direction of each jump.
+
+    Returns:
+        np.array, np.array: Arrays containing peaks and valleys, respectively
+    """
+    aug_jump_points = [0] + list(jump_points) + [len(signal)]
+    # peak finding
+    peaks = []
+    last = aug_jump_points[0]
+    for point in aug_jump_points[1:]:
+        relevant_window = signal[last:point]
+        max_point = np.argmax(relevant_window)
+        actual_index = last + max_point
+        # if the maximum value occurs first or last in the signal we can't be
+        # sure its a peak
+        if not (actual_index == 0 or actual_index == len(relevant_window) - 1):
+            peaks.append(actual_index)
+        last = point
+
+    # valley finding
+    vallies = []
+    last = aug_jump_points[0]
+    for point in aug_jump_points[1:]:
+        relevant_window = signal[last:point]
+        min_point = np.argmin(relevant_window)
+        actual_index = last + min_point
+        # if the maximum value occurs first or last in the signal we can't be
+        # sure its a peak
+        if not (actual_index == 0 or actual_index == len(relevant_window) - 1):
+            vallies.append(actual_index)
+        last = point
+
+    return np.array(peaks), np.array(vallies)
+
+
 
 
 def find_points_of_reversal(signal: np.array,
@@ -121,10 +170,6 @@ def find_motion_direction(jump_pulse_train: np.array,
 
     return direction
 
-
-
-
-
 def find_wrapped_phase(signal: np.array):
     """Find the wrapped phase from the normalized SMI signal.
 
@@ -140,6 +185,8 @@ def find_wrapped_phase(signal: np.array):
     """
     return np.arccos(signal)
 
+def unwrap_phase(wrapped_phase: np.array, ):
+    pass
 
 
 
@@ -147,8 +194,8 @@ def find_wrapped_phase(signal: np.array):
 input_displacement_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_in.csv')
 smi_signal_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_out.csv')
 
-input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')
-smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')
+input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:10000]
+smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:10000]
 
 jump_pulse_train, jump_points, jump_signs = find_jump_points(smi_signal)
 
@@ -159,20 +206,28 @@ rev_ponts = find_points_of_reversal(signal=smi_signal,
 direction = find_motion_direction(jump_pulse_train=jump_pulse_train,
                       reversal_points=rev_ponts)
 
+p, v = find_peaks_and_valleys(signal=smi_signal,
+                              jump_points=jump_points)
+
 first_diff = np.diff(smi_signal)
 
 
-
-fig, (ax1, ax2, ax3, ax4) = plt.subplots(4)
+matplotlib.rcParams['figure.dpi'] = 200
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(8, 3))
 ax1.plot(smi_signal)
-for rev in rev_ponts:
-    ax1.axvline(x=rev)
+ax1.set_ylabel('Normalized SMI \n Signal')
+for item in p:
+    ax1.axvline(x=item, color = 'r', linewidth = 0.5)
+for item in v:
+    ax1.axvline(x=item, color = 'g', linewidth = 0.5)
 ax2.plot(direction)
+ax2.set_ylabel('Motion Direction')
 ax3.plot(jump_pulse_train)
+ax3.set_ylabel('Jump Points')
 ax4.plot(input_diplacement)
-
+ax4.set_ylabel('Input')
 a = np.std(first_diff)
-
+plt.tight_layout()
 plt.show()
 
 print("")
