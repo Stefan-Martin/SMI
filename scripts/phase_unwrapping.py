@@ -45,11 +45,14 @@ def find_jump_points(signal: np.array, thresh_std: float = 3):
 
 
 def find_peaks_and_valleys(signal: np.array,
-                           jump_points: np.array):
+                           jump_points: np.array,
+                           turnaround_points: np.array,
+                           direction: np.array):
     """Find the peaks and valleys in the SMI signal.
 
     A peak is the argmax of the SMI signal between two jump points, and a valley
-    is the argmin of the SMI signal between peaks.
+    is the argmin of the SMI signal between peaks. Also must handle edge cases
+    near turnaround points.
 
     Args:
         signal (np.array): NORMALIZED SMI signal
@@ -60,34 +63,75 @@ def find_peaks_and_valleys(signal: np.array,
     Returns:
         np.array, np.array: Arrays containing peaks and valleys, respectively
     """
-    aug_jump_points = [0] + list(jump_points) + [len(signal)]
-    # peak finding
+    aug_jump_points = [0] + list(jump_points)
+
     peaks = []
-    last = aug_jump_points[0]
-    for point in aug_jump_points[1:]:
-        relevant_window = signal[last:point]
-        max_point = np.argmax(relevant_window)
-        actual_index = last + max_point
-        # if the maximum value occurs first or last in the signal we can't be
-        # sure its a peak
-        if not (actual_index == 0 or actual_index == len(relevant_window) - 1):
-            peaks.append(actual_index)
-        last = point
-
-    # valley finding
     vallies = []
-    last = aug_jump_points[0]
-    for point in aug_jump_points[1:]:
-        relevant_window = signal[last:point]
-        min_point = np.argmin(relevant_window)
-        actual_index = last + min_point
-        # if the maximum value occurs first or last in the signal we can't be
-        # sure its a peak
-        if not (actual_index == 0 or actual_index == len(relevant_window) - 1):
-            vallies.append(actual_index)
-        last = point
+    turnaround_counter = 0
 
-    return np.array(peaks), np.array(vallies)
+    for index,current in enumerate(aug_jump_points[:-1]):
+        next = aug_jump_points[index+1]
+        if not turnaround_points:
+            current_turnaround = -1
+        else:
+            current_turnaround = turnaround_points[turnaround_counter]
+
+        # if current_turnaround closer than next jump
+        if (current_turnaround - current) > 0 and (np.abs(current_turnaround - current) < np.abs(next - current)):
+
+            # if moving towards laser after turnaround
+            if (direction[current] == -1) and (direction[next] == 1):
+
+                # look for valley between current and turnaround
+                vallies.append(
+                    current + np.argmin(signal[current:current_turnaround])
+                )
+
+                # look for valley between turnaround and next
+                vallies.append(
+                    current_turnaround + np.argmin(
+                        signal[current_turnaround:next+1]
+                    )
+                )
+
+            # if moving away from laser after turnaround
+            else:
+
+                # look for a peak between current and turnaround
+                peaks.append(
+                    current + np.argmax(signal[current:current_turnaround])
+                )
+
+                # look for a peak between turnaround and next
+                peaks.append(
+                    current_turnaround + np.argmax(
+                        signal[current_turnaround:next]
+                    )
+                )
+            if turnaround_counter < len(turnaround_points)-1:
+                turnaround_counter += 1
+        else:
+            this_peak = current + np.argmax(signal[current:next])
+            if not this_peak == 0 or this_peak == len(signal)-1:
+                peaks.append(this_peak)
+
+    # find the rest of the vallies in-between peaks. Do this seperately because
+    # vallies are typically very close to jump points which makes finding them
+    # between jump points un-reliable
+    aug_peaks = peaks + [len(signal)]
+    for index,current in enumerate(aug_peaks[:-1]):
+        next = aug_peaks[index + 1]
+        # if there is a turnaround between current and next do not look for a
+        # valley
+        for turn in turnaround_points:
+            if current<turn<next:
+                break
+        else:
+            this_valley = current + np.argmin(signal[current:next])
+            if not (this_valley == 0 or this_valley == len(signal)-1):
+                vallies.append(this_valley)
+
+    return sorted(np.array(peaks)), sorted(np.array(vallies))
 
 
 
@@ -194,8 +238,8 @@ def unwrap_phase(wrapped_phase: np.array, ):
 input_displacement_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_in.csv')
 smi_signal_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_out.csv')
 
-input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:10000]
-smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:10000]
+input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:2500]
+smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:2500]
 
 jump_pulse_train, jump_points, jump_signs = find_jump_points(smi_signal)
 
@@ -207,14 +251,13 @@ direction = find_motion_direction(jump_pulse_train=jump_pulse_train,
                       reversal_points=rev_ponts)
 
 p, v = find_peaks_and_valleys(signal=smi_signal,
-                              jump_points=jump_points)
-
-first_diff = np.diff(smi_signal)
-
+                              jump_points=jump_points,
+                              turnaround_points=rev_ponts,
+                              direction=direction)
 
 matplotlib.rcParams['figure.dpi'] = 200
 fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(8, 3))
-ax1.plot(smi_signal)
+ax1.plot(smi_signal, linewidth = 0.5)
 ax1.set_ylabel('Normalized SMI \n Signal')
 for item in p:
     ax1.axvline(x=item, color = 'r', linewidth = 0.5)
@@ -226,7 +269,6 @@ ax3.plot(jump_pulse_train)
 ax3.set_ylabel('Jump Points')
 ax4.plot(input_diplacement)
 ax4.set_ylabel('Input')
-a = np.std(first_diff)
 plt.tight_layout()
 plt.show()
 
