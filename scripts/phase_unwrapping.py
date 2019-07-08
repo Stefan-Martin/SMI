@@ -71,7 +71,7 @@ def find_peaks_and_valleys(signal: np.array,
 
     for index,current in enumerate(aug_jump_points[:-1]):
         next = aug_jump_points[index+1]
-        if not turnaround_points:
+        if not turnaround_points.size:
             current_turnaround = -1
         else:
             current_turnaround = turnaround_points[turnaround_counter]
@@ -131,7 +131,7 @@ def find_peaks_and_valleys(signal: np.array,
             if not (this_valley == 0 or this_valley == len(signal)-1):
                 vallies.append(this_valley)
 
-    return sorted(np.array(peaks)), sorted(np.array(vallies))
+    return np.array(sorted(peaks)), np.array(sorted(vallies))
 
 
 
@@ -214,23 +214,81 @@ def find_motion_direction(jump_pulse_train: np.array,
 
     return direction
 
-def find_wrapped_phase(signal: np.array):
-    """Find the wrapped phase from the normalized SMI signal.
 
-    We find the unwrapped phase by applying the inverse cosine function to the
-    normalized SMI signal. Note that this is only possible if the signal is
-    normalized due to the domain of the arccos function.
+def unwrap_phase(signal: np.array,
+                 direction: np.array,
+                 peaks: np.array,
+                 vallies: np.array,
+                 jump_points: np.array):
+    """Apply the phase unwrapping algorithm.
+
+    Unwrap the phase of the SMI signal using previously extracted information
+    about movement direction, peak location, valley location, and jumping point
+    location.
 
     Args:
-        signal (np.array): NORMALIZED SMI signal
+        signal (np.array): NORMALIZED SMI signal.
+        direction (np.array): extracted movement direction at every point in
+            |signal|.
+        peaks (np.array): peak locations in |signal|.
+        vallies (np.array): valley locations in |signal|.
+        jump_points (np.array): jump locations in |signal|.
 
     Returns:
-        np.array: array same size of signal representing wrapped phase
-    """
-    return np.arccos(signal)
+        np.array: unwrapped phase
+        """
+    unwrapped_phase = np.zeros_like(signal)
+    wrapped_phase = np.arccos(signal)
+    i_v = 0
+    i_j = 0
+    i_vp = 1
+    if np.sign(signal[1] - signal[0]) == \
+            np.sign(wrapped_phase[1] - wrapped_phase[0]):
+        i_vp = 0
+    for index, (this_direction, this_wrapped) in enumerate(zip(direction, wrapped_phase)):
+        if (index in peaks) or (index in vallies):
+            i_vp += 1
+        if (index in vallies) and this_direction == 1:
+            i_v -= 1
+        if (index in vallies) and this_direction == -1:
+            i_v += 1
+        if (index in jump_points) and this_direction == -1:
+            i_j += 1
 
-def unwrap_phase(wrapped_phase: np.array, ):
-    pass
+        if this_direction == -1:
+
+            # check if in-between peak and jump
+            # (is closest point on right a jump?)
+            rhs_peaks = peaks[peaks > index]
+            rhs_jumps = jump_points[jump_points > index]
+
+            # case 0: in-between peak and jump
+            # case 1: in-between valley and peak
+            if rhs_jumps.size and not rhs_peaks.size:
+                case = 0
+            elif rhs_peaks.size and not rhs_jumps.size:
+                case = 1
+            elif not rhs_peaks.size and not rhs_jumps.size:
+                case = 1
+            else:
+                closest_rhs_jump = np.min(rhs_jumps - index)
+                closest_rhs_peak = np.min(rhs_peaks - index)
+                if(closest_rhs_jump - index) < (closest_rhs_peak - index):
+                    case = 0
+                else:
+                    case = 1
+
+            if case:
+                unwrapped_phase[index] = (-1*this_wrapped) + 2*np.pi*i_v
+            else:
+                unwrapped_phase[index] = this_wrapped + 2*np.pi*i_j
+
+        else:
+            unwrapped_phase[index] = (((-1) ** (i_vp)) * this_wrapped) + 2*np.pi*(i_v + 1)
+
+    return unwrapped_phase
+
+
 
 
 
@@ -238,8 +296,8 @@ def unwrap_phase(wrapped_phase: np.array, ):
 input_displacement_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_in.csv')
 smi_signal_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_out.csv')
 
-input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:2500]
-smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:2500]
+input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:10000]
+smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:10000]
 
 jump_pulse_train, jump_points, jump_signs = find_jump_points(smi_signal)
 
@@ -255,8 +313,14 @@ p, v = find_peaks_and_valleys(signal=smi_signal,
                               turnaround_points=rev_ponts,
                               direction=direction)
 
+unwrapped_phase = unwrap_phase(signal=smi_signal,
+                               direction=direction,
+                               peaks=p,
+                               vallies=v,
+                               jump_points=jump_points)
+
 matplotlib.rcParams['figure.dpi'] = 200
-fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, figsize=(8, 3))
+fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6, figsize=(8, 3))
 ax1.plot(smi_signal, linewidth = 0.5)
 ax1.set_ylabel('Normalized SMI \n Signal')
 for item in p:
@@ -269,6 +333,9 @@ ax3.plot(jump_pulse_train)
 ax3.set_ylabel('Jump Points')
 ax4.plot(input_diplacement)
 ax4.set_ylabel('Input')
+ax5.plot(unwrapped_phase)
+ax5.set_ylabel('UWP')
+ax6.plot(np.arccos(smi_signal))
 plt.tight_layout()
 plt.show()
 
