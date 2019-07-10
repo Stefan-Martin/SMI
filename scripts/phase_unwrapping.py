@@ -319,7 +319,8 @@ def unwrap_phase(signal: np.array,
                  direction: np.array,
                  p_v_segments: np.array,
                  v_p_segments: np.array,
-                 reversal_segments: np.array):
+                 reversal_segments: np.array,
+                 vallies: np.array):
     """Apply the phase unwrapping algorithm.
 
     Unwrap the phase of the SMI signal using previously extracted information
@@ -348,9 +349,10 @@ def unwrap_phase(signal: np.array,
     phase_disc = np.zeros_like(signal)
     running_sum = 0
     for index,_ in enumerate(signal):
-        phase_disc[index] = running_sum
-        if index in jump_points:
+        if index in vallies:
             running_sum += (2 *np.pi) * -1 * direction[index]
+        phase_disc[index] = running_sum
+
 
     # construct wrapped phase array
     wrapped_phase = np.arccos(signal)
@@ -422,12 +424,15 @@ unwrapped_phase = unwrap_phase(signal=smi_signal,
                                direction=direction,
                                p_v_segments=pr,
                                v_p_segments=vr,
-                               reversal_segments=rr)
+                               reversal_segments=rr,
+                               vallies=v)
 
 nominal_phase = remove_feedback_dynamics(unwrapped_phase, C=3, alpha=6)
 
+error = (input_diplacement - np.mean(input_diplacement)) - (nominal_phase - np.mean(nominal_phase))
+
 matplotlib.rcParams['figure.dpi'] = 200
-fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6, figsize=(8, 3))
+fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, figsize=(8, 5))
 
 ax1.plot(smi_signal, linewidth = 0.5)
 ax1.set_ylabel('Normalized SMI \n Signal')
@@ -440,15 +445,18 @@ ax3.plot(jump_pulse_train)
 ax4.plot(input_diplacement, linewidth=0.5)
 ax5.plot(unwrapped_phase, linewidth=0.5)
 ax6.plot(nominal_phase, linewidth=0.5)
+ax7.plot(error, linewidth=0.5)
 
-
-limits = [4150,4175]
+limits = [0,10000]
 ax1.set_xlim(limits)
 ax2.set_xlim(limits)
 ax3.set_xlim(limits)
 ax4.set_xlim(limits)
 ax5.set_xlim(limits)
 ax6.set_xlim(limits)
+ax7.set_xlim(limits)
+ax7.set_ylim([-0.002,0.002])
+
 
 plt.show()
 
