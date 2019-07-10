@@ -143,8 +143,7 @@ def find_points_of_reversal(signal: np.array,
     """Reversal points are where we think the target has changed directions.
 
     Reversal points are located in-between jump points of opposite signs.
-    We use the min or max (dependant on second derivative of signal in region
-    of reversal.
+    We use the min or max depending on direction of acceleration.
 
     Args:
         signal (np.array): NORMALIZED SMI signal
@@ -214,77 +213,162 @@ def find_motion_direction(jump_pulse_train: np.array,
 
     return direction
 
+def segment_signal(signal: np.array, peaks: np.array, vallies: np.array):
+    """Segment the SMI signal into important regions.
+
+    To perform phase unwrapping, we need to know when we are inbetween a valley
+    and a peak, inbetween a peak and a valley, and when we are in a area of
+    reversal. Step through the signal in O(n_peaks) time and perform this
+    segmentation. This is a highly crunchy function.
+
+    Args:
+        signal (np.array): SMI Signal
+        peaks (np.array): peak locations in |signal|.
+        vallies (np.array): valley locations in |signal|.
+
+    Returns:
+        np.array, np.array, np.array: arrays indicating
+            when we are in a V-P, P-V or reversal segment, respectively. P-V
+            and V-P arrays are binary, and the reversal array uses 1 or -1 to
+            indicate sign of direction change."""
+
+    peak_valley = np.zeros_like(signal)
+    valley_peak = np.zeros_like(signal)
+    reversal = np.zeros_like(signal)
+
+    current = None
+    peak_index = 0
+    valley_index = 0
+    # check where we start on the first fringe
+    # we start between a valley and a peak
+    if peaks[0] < vallies[0]:
+        valley_peak[0:peaks[0]] = 1
+        current = 'p'
+    # we start between a peak and a valley
+    else:
+        peak_valley[0:vallies[0]] = 1
+        current = 'v'
+
+
+    done = False
+    while not done:
+
+        # if we are currently at a peak
+        if current == 'p':
+
+            # if no more peaks to go to but still at least 1 valley
+            if (peak_index == len(peaks) - 1) and (valley_index <= len(vallies) -1):
+                peak_valley[peaks[peak_index]:vallies[valley_index]] = 1
+                current = 'v'
+                peak_index += 1
+
+            # if no more vallies to go to
+            elif valley_index > len(vallies) - 1:
+                # we must be at the end of the signal and be in a P-V reigon
+                peak_valley[peaks[peak_index]:] = 1
+                done = True
+
+            else:
+                current_peak = peaks[peak_index]
+                next_peak = peaks[peak_index + 1]
+                next_valley = vallies[valley_index]
+
+                # if next valley closer than next peak
+                if (next_valley - current_peak) < (next_peak - current_peak):
+                    peak_valley[current_peak:next_valley] = 1
+                    current = 'v'
+                    peak_index += 1
+
+                else: # if next peak is closer we are in a reversal
+                    reversal[current_peak:next_peak] = -1
+                    peak_index += 1
+
+        # we are currently at a valley
+        else:
+
+            # if no more vallies to go to but still at least 1 peak
+            if (valley_index == len(vallies) - 1) and (
+                    peak_index <= len(peaks) - 1):
+                valley_peak[vallies[valley_index]:peaks[peak_index]] = 1
+                current = 'p'
+                valley_index += 1
+
+            # if no more peaks to go to
+            elif peak_index > len(peaks) - 1:
+                # we must be at the end of the signal and be in a V-P reigon
+                valley_peak[vallies[valley_index]:] = 1
+                done = True
+            else:
+                current_valley = vallies[valley_index]
+                next_valley = vallies[valley_index + 1]
+                next_peak = peaks[peak_index]
+
+                # if next peak closer than next valley
+                if (next_peak - current_valley) < (next_valley - current_valley):
+                    valley_peak[current_valley:next_peak] = 1
+                    current = 'p'
+                    valley_index += 1
+
+                else:  # if next peak is closer we are in a reversal
+                    reversal[current_valley:next_valley] = 1
+                    valley_index += 1
+
+    return peak_valley, valley_peak, reversal
 
 def unwrap_phase(signal: np.array,
                  direction: np.array,
-                 peaks: np.array,
-                 vallies: np.array,
-                 jump_points: np.array):
+                 p_v_segments: np.array,
+                 v_p_segments: np.array,
+                 reversal_segments: np.array):
     """Apply the phase unwrapping algorithm.
 
     Unwrap the phase of the SMI signal using previously extracted information
     about movement direction, peak location, valley location, and jumping point
-    location.
+    location. Follows the work of:
+    https://sci-hub.tw/https://www.osapublishing.org/ao/abstract.cfm?uri=ao-50-26-5064
 
     Args:
         signal (np.array): NORMALIZED SMI signal.
         direction (np.array): extracted movement direction at every point in
             |signal|.
-        peaks (np.array): peak locations in |signal|.
-        vallies (np.array): valley locations in |signal|.
-        jump_points (np.array): jump locations in |signal|.
-
+        p_v_segments (np.array): array parralel to |signal| that contains a 1 if
+            this part of signal is in located inbetween a peak and a valley
+            (0 otherwise).
+        v_p_segments (np.array): array parralel to |signal| that contains a 1 if
+            this part of signal is in located inbetween a valley and a peak
+            (0 otherwise).
+        reversal_segments (np.array): array parralel to |signal| that contains
+            a 1 if this part of signal is in an area of a v-v reversal and a
+            -1 if this part of the signal is in an area of a p-p reversal.
     Returns:
         np.array: unwrapped phase
         """
-    unwrapped_phase = np.zeros_like(signal)
+
+    # construct phase discontinuity array
+    phase_disc = np.zeros_like(signal)
+    running_sum = 0
+    for index,_ in enumerate(signal):
+        if index in jump_points:
+            running_sum += (2 *np.pi) * -1 * direction[index]
+        phase_disc[index] = running_sum
+
+    # construct wrapped phase array
     wrapped_phase = np.arccos(signal)
-    i_v = 0
-    i_j = 0
-    i_vp = 1
-    if np.sign(signal[1] - signal[0]) == \
-            np.sign(wrapped_phase[1] - wrapped_phase[0]):
-        i_vp = 0
-    for index, (this_direction, this_wrapped) in enumerate(zip(direction, wrapped_phase)):
-        if (index in peaks) or (index in vallies):
-            i_vp += 1
-        if (index in vallies) and this_direction == 1:
-            i_v -= 1
-        if (index in vallies) and this_direction == -1:
-            i_v += 1
-        if (index in jump_points) and this_direction == -1:
-            i_j += 1
 
-        if this_direction == -1:
+    # construct unwrapped phase array
+    unwrapped_phase = np.zeros_like(signal)
 
-            # check if in-between peak and jump
-            # (is closest point on right a jump?)
-            rhs_peaks = peaks[peaks > index]
-            rhs_jumps = jump_points[jump_points > index]
+    # v-p segments
+    unwrapped_phase += np.multiply(wrapped_phase, v_p_segments)
 
-            # case 0: in-between peak and jump
-            # case 1: in-between valley and peak
-            if rhs_jumps.size and not rhs_peaks.size:
-                case = 0
-            elif rhs_peaks.size and not rhs_jumps.size:
-                case = 1
-            elif not rhs_peaks.size and not rhs_jumps.size:
-                case = 1
-            else:
-                closest_rhs_jump = np.min(rhs_jumps - index)
-                closest_rhs_peak = np.min(rhs_peaks - index)
-                if(closest_rhs_jump - index) < (closest_rhs_peak - index):
-                    case = 0
-                else:
-                    case = 1
+    # p-v segments
+    unwrapped_phase += np.multiply(wrapped_phase, p_v_segments)
 
-            if case:
-                unwrapped_phase[index] = (-1*this_wrapped) + 2*np.pi*i_v
-            else:
-                unwrapped_phase[index] = this_wrapped + 2*np.pi*i_j
+    # reversal segments
+    unwrapped_phase += np.multiply(wrapped_phase, reversal_segments)
 
-        else:
-            unwrapped_phase[index] = (((-1) ** (i_vp)) * this_wrapped) + 2*np.pi*(i_v + 1)
+    # phase discontinuity
+    unwrapped_phase += phase_disc
 
     return unwrapped_phase
 
@@ -306,21 +390,24 @@ rev_ponts = find_points_of_reversal(signal=smi_signal,
                                     jump_signs=jump_signs)
 
 direction = find_motion_direction(jump_pulse_train=jump_pulse_train,
-                      reversal_points=rev_ponts)
+                                  reversal_points=rev_ponts)
 
 p, v = find_peaks_and_valleys(signal=smi_signal,
                               jump_points=jump_points,
                               turnaround_points=rev_ponts,
                               direction=direction)
 
+pr, vr, rr = segment_signal(signal=smi_signal, vallies=v, peaks=p)
+
 unwrapped_phase = unwrap_phase(signal=smi_signal,
                                direction=direction,
-                               peaks=p,
-                               vallies=v,
-                               jump_points=jump_points)
+                               p_v_segments=pr,
+                               v_p_segments=vr,
+                               reversal_segments=rr)
 
 matplotlib.rcParams['figure.dpi'] = 200
-fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6, figsize=(8, 3))
+fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8) = plt.subplots(8, figsize=(8, 3))
+
 ax1.plot(smi_signal, linewidth = 0.5)
 ax1.set_ylabel('Normalized SMI \n Signal')
 for item in p:
@@ -328,15 +415,23 @@ for item in p:
 for item in v:
     ax1.axvline(x=item, color = 'g', linewidth = 0.5)
 ax2.plot(direction)
-ax2.set_ylabel('Motion Direction')
 ax3.plot(jump_pulse_train)
-ax3.set_ylabel('Jump Points')
 ax4.plot(input_diplacement)
-ax4.set_ylabel('Input')
-ax5.plot(unwrapped_phase)
-ax5.set_ylabel('UWP')
-ax6.plot(np.arccos(smi_signal))
-plt.tight_layout()
+ax5.plot(unwrapped_phase, linewidth=0.5)
+ax6.plot(pr, linewidth = 0.5)
+ax7.plot(vr, linewidth = 0.5)
+ax8.plot(rr, linewidth = 0.5)
+
+
+limits = [0,10000]
+ax1.set_xlim(limits)
+ax2.set_xlim(limits)
+ax3.set_xlim(limits)
+ax4.set_xlim(limits)
+ax5.set_xlim(limits)
+ax6.set_xlim(limits)
+ax7.set_xlim(limits)
+ax8.set_xlim(limits)
 plt.show()
 
 print("")
