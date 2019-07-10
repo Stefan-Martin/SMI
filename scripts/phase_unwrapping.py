@@ -280,7 +280,7 @@ def segment_signal(signal: np.array, peaks: np.array, vallies: np.array):
                     peak_index += 1
 
                 else: # if next peak is closer we are in a reversal
-                    reversal[current_peak:next_peak] = -1
+                    reversal[current_peak:next_peak] = 1
                     peak_index += 1
 
         # we are currently at a valley
@@ -348,9 +348,9 @@ def unwrap_phase(signal: np.array,
     phase_disc = np.zeros_like(signal)
     running_sum = 0
     for index,_ in enumerate(signal):
+        phase_disc[index] = running_sum
         if index in jump_points:
             running_sum += (2 *np.pi) * -1 * direction[index]
-        phase_disc[index] = running_sum
 
     # construct wrapped phase array
     wrapped_phase = np.arccos(signal)
@@ -359,19 +359,38 @@ def unwrap_phase(signal: np.array,
     unwrapped_phase = np.zeros_like(signal)
 
     # v-p segments
-    unwrapped_phase += np.multiply(wrapped_phase, v_p_segments)
+    unwrapped_phase += np.multiply(np.multiply(wrapped_phase,direction), v_p_segments)
 
     # p-v segments
-    unwrapped_phase += np.multiply(wrapped_phase, p_v_segments)
+    unwrapped_phase += np.multiply(np.multiply(wrapped_phase, -1 * direction), p_v_segments)
 
     # reversal segments
-    unwrapped_phase += np.multiply(wrapped_phase, reversal_segments)
+    unwrapped_phase += np.multiply(-1*wrapped_phase, reversal_segments)
 
     # phase discontinuity
     unwrapped_phase += phase_disc
 
     return unwrapped_phase
 
+def remove_feedback_dynamics(unwrapped_phase: np.array,
+                             C: numbers.Real,
+                             alpha: numbers.Real):
+    """Invert the feedback dynamics according to the Lang-Kobyashi equations.
+
+    Recover the actual accumulated phase by inverting equation 2 from
+    https://sci-hub.tw/https://www.osapublishing.org/ao/abstract.cfm?uri=ao-50-26-5064
+
+    Args:
+        unwrapped_phase (np.array): unwrapped phase (referenced to actual laser
+            wavelength)
+        C (numbers.Real): ackett's coupling factor for this signal
+        alpha (numbers.Real): Linewidth enhancement factor for this signal
+
+    Returns:
+        np.array: nominal accumulated phase
+    """
+    nominal_phase = unwrapped_phase + C * np.sin(unwrapped_phase + np.arctan(alpha))
+    return nominal_phase
 
 
 
@@ -405,8 +424,10 @@ unwrapped_phase = unwrap_phase(signal=smi_signal,
                                v_p_segments=vr,
                                reversal_segments=rr)
 
+nominal_phase = remove_feedback_dynamics(unwrapped_phase, C=3, alpha=6)
+
 matplotlib.rcParams['figure.dpi'] = 200
-fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7, ax8) = plt.subplots(8, figsize=(8, 3))
+fig, (ax1, ax2, ax3, ax4, ax5, ax6) = plt.subplots(6, figsize=(8, 3))
 
 ax1.plot(smi_signal, linewidth = 0.5)
 ax1.set_ylabel('Normalized SMI \n Signal')
@@ -416,22 +437,19 @@ for item in v:
     ax1.axvline(x=item, color = 'g', linewidth = 0.5)
 ax2.plot(direction)
 ax3.plot(jump_pulse_train)
-ax4.plot(input_diplacement)
+ax4.plot(input_diplacement, linewidth=0.5)
 ax5.plot(unwrapped_phase, linewidth=0.5)
-ax6.plot(pr, linewidth = 0.5)
-ax7.plot(vr, linewidth = 0.5)
-ax8.plot(rr, linewidth = 0.5)
+ax6.plot(nominal_phase, linewidth=0.5)
 
 
-limits = [0,10000]
+limits = [4150,4175]
 ax1.set_xlim(limits)
 ax2.set_xlim(limits)
 ax3.set_xlim(limits)
 ax4.set_xlim(limits)
 ax5.set_xlim(limits)
 ax6.set_xlim(limits)
-ax7.set_xlim(limits)
-ax8.set_xlim(limits)
+
 plt.show()
 
 print("")
