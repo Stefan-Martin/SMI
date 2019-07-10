@@ -431,33 +431,32 @@ nominal_phase = remove_feedback_dynamics(unwrapped_phase, C=3, alpha=6)
 
 error = (input_diplacement - np.mean(input_diplacement)) - (nominal_phase - np.mean(nominal_phase))
 
-matplotlib.rcParams['figure.dpi'] = 200
-fig, (ax1, ax2, ax3, ax4, ax5, ax6, ax7) = plt.subplots(7, figsize=(8, 5))
 
-ax1.plot(smi_signal, linewidth = 0.5)
-ax1.set_ylabel('Normalized SMI \n Signal')
+# plotting
+matplotlib.rcParams['figure.dpi'] = 300
+fig, (ax1, ax2, ax3, ax4, ax5) = plt.subplots(5, figsize=(8, 8))
+ax1.plot(input_diplacement, linewidth=1)
+ax1.set_ylabel('Input Displacement (x/λ)')
+ax2.plot(smi_signal, linewidth = 1)
+ax2.set_ylabel('SMI Signal (V)')
 for item in p:
-    ax1.axvline(x=item, color = 'r', linewidth = 0.5)
+    ax2.axvline(x=item, color = 'r', linewidth = 0.5)
 for item in v:
-    ax1.axvline(x=item, color = 'g', linewidth = 0.5)
-ax2.plot(direction)
-ax3.plot(jump_pulse_train)
-ax4.plot(input_diplacement, linewidth=0.5)
-ax5.plot(unwrapped_phase, linewidth=0.5)
-ax6.plot(nominal_phase, linewidth=0.5)
-ax7.plot(error, linewidth=0.5)
-
+    ax2.axvline(x=item, color = 'g', linewidth = 0.5)
+ax3.plot(unwrapped_phase, linewidth=1)
+ax3.set_ylabel('Recovered Feedback \n Phase (rad)')
+ax4.plot(nominal_phase, linewidth=1)
+ax4.set_ylabel('Recovered \n Displacement (x/λ)')
+ax5.plot(error, linewidth=0.5)
+ax5.set_ylabel('Error (x/λ)')
+ax5.set_xlabel('Sample')
+fig.suptitle('The Improved Phase Unwrapping Method (C=3, α=6)')
 limits = [0,10000]
 ax1.set_xlim(limits)
 ax2.set_xlim(limits)
 ax3.set_xlim(limits)
 ax4.set_xlim(limits)
 ax5.set_xlim(limits)
-ax6.set_xlim(limits)
-ax7.set_xlim(limits)
-ax7.set_ylim([-0.002,0.002])
+ax5.set_ylim([-0.003,0.003])
+plt.savefig(os.path.join(os.getenv('HOME'),'interferometry_data/c3plot.png'))
 
-
-plt.show()
-
-print("")
