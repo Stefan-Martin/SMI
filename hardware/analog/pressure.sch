@@ -1,0 +1,146 @@
+EESchema Schematic File Version 4
+LIBS:analog-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 4 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text HLabel 6950 3900 2    50   Input ~ 0
+PRESSURE
+$Comp
+L Sensor_Pressure:MPXA6115A U7
+U 1 1 5D8EF664
+P 5450 3550
+F 0 "U7" H 5020 3596 50  0000 R CNN
+F 1 "MPXA6115A" H 5020 3505 50  0000 R CNN
+F 2 "" H 4950 3200 50  0001 C CNN
+F 3 "http://www.nxp.com/files/sensors/doc/data_sheet/MPXA6115A.pdf" H 5450 4150 50  0001 C CNN
+	1    5450 3550
+	1    0    0    -1  
+$EndComp
+Text Notes 6250 2950 0    50   ~ 0
+Current draw: max 10mA
+$Comp
+L power:+5V #PWR015
+U 1 1 5D8EF8B9
+P 5450 2950
+F 0 "#PWR015" H 5450 2800 50  0001 C CNN
+F 1 "+5V" H 5465 3123 50  0000 C CNN
+F 2 "" H 5450 2950 50  0001 C CNN
+F 3 "" H 5450 2950 50  0001 C CNN
+	1    5450 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 2950 5450 3050
+$Comp
+L Device:C_Small C9
+U 1 1 5D8EF91F
+P 5150 3050
+F 0 "C9" V 4921 3050 50  0000 C CNN
+F 1 "C_Small" V 5012 3050 50  0000 C CNN
+F 2 "" H 5150 3050 50  0001 C CNN
+F 3 "~" H 5150 3050 50  0001 C CNN
+	1    5150 3050
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5250 3050 5450 3050
+Connection ~ 5450 3050
+Wire Wire Line
+	5450 3050 5450 3250
+Wire Wire Line
+	4800 3100 4800 3050
+Wire Wire Line
+	4800 3050 5050 3050
+$Comp
+L Device:R_US R10
+U 1 1 5D8EFC00
+P 6000 3900
+F 0 "R10" H 6068 3946 50  0000 L CNN
+F 1 "51K" H 6068 3855 50  0000 L CNN
+F 2 "" V 6040 3890 50  0001 C CNN
+F 3 "~" H 6000 3900 50  0001 C CNN
+	1    6000 3900
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R9
+U 1 1 5D8EFC63
+P 6400 3700
+F 0 "R9" H 6468 3746 50  0000 L CNN
+F 1 "470K" H 6468 3655 50  0000 L CNN
+F 2 "" V 6440 3690 50  0001 C CNN
+F 3 "~" H 6400 3700 50  0001 C CNN
+	1    6400 3700
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R11
+U 1 1 5D8EFCB9
+P 6400 4100
+F 0 "R11" H 6468 4146 50  0000 L CNN
+F 1 "82K" H 6468 4055 50  0000 L CNN
+F 2 "" V 6440 4090 50  0001 C CNN
+F 3 "~" H 6400 4100 50  0001 C CNN
+	1    6400 4100
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 3850 5450 4250
+Wire Wire Line
+	6400 4250 6000 4250
+Connection ~ 5450 4250
+Wire Wire Line
+	5450 4250 5450 4350
+Wire Wire Line
+	6000 4050 6000 4250
+Connection ~ 6000 4250
+Wire Wire Line
+	6000 4250 5450 4250
+Wire Wire Line
+	5850 3550 6000 3550
+Wire Wire Line
+	6000 3550 6000 3750
+Wire Wire Line
+	6000 3550 6400 3550
+Connection ~ 6000 3550
+Wire Wire Line
+	6400 3850 6400 3900
+Wire Wire Line
+	6950 3900 6400 3900
+Connection ~ 6400 3900
+Wire Wire Line
+	6400 3900 6400 3950
+$Comp
+L power:GNDPWR #PWR017
+U 1 1 5D8F3AD1
+P 5450 4350
+F 0 "#PWR017" H 5450 4150 50  0001 C CNN
+F 1 "GNDPWR" H 5454 4196 50  0000 C CNN
+F 2 "" H 5450 4300 50  0001 C CNN
+F 3 "" H 5450 4300 50  0001 C CNN
+	1    5450 4350
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GNDPWR #PWR016
+U 1 1 5D8F3B24
+P 4800 3100
+F 0 "#PWR016" H 4800 2900 50  0001 C CNN
+F 1 "GNDPWR" H 4804 2946 50  0000 C CNN
+F 2 "" H 4800 3050 50  0001 C CNN
+F 3 "" H 4800 3050 50  0001 C CNN
+	1    4800 3100
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
