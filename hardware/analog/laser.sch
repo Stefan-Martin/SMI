@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 6 6
+Sheet 6 7
 Title ""
 Date ""
 Rev ""
@@ -137,124 +137,6 @@ Wire Wire Line
 Connection ~ 4700 3850
 Wire Wire Line
 	4700 3850 5100 3850
-$Comp
-L Amplifier_Operational:TL082 U11
-U 2 1 5D8F7C0E
-P 7450 4800
-F 0 "U11" H 7450 4433 50  0000 C CNN
-F 1 "TL082" H 7450 4524 50  0000 C CNN
-F 2 "" H 7450 4800 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 7450 4800 50  0001 C CNN
-	2    7450 4800
-	1    0    0    1   
-$EndComp
-$Comp
-L Device:R_US R18
-U 1 1 5D8F7E61
-P 7450 4250
-F 0 "R18" V 7245 4250 50  0000 C CNN
-F 1 "22K" V 7336 4250 50  0000 C CNN
-F 2 "" V 7490 4240 50  0001 C CNN
-F 3 "~" H 7450 4250 50  0001 C CNN
-	1    7450 4250
-	0    1    1    0   
-$EndComp
-$Comp
-L Device:C_Small C13
-U 1 1 5D8F7F09
-P 7450 3850
-F 0 "C13" V 7221 3850 50  0000 C CNN
-F 1 "150pF" V 7312 3850 50  0000 C CNN
-F 2 "" H 7450 3850 50  0001 C CNN
-F 3 "~" H 7450 3850 50  0001 C CNN
-	1    7450 3850
-	0    1    1    0   
-$EndComp
-Wire Wire Line
-	6300 3850 6750 3850
-Wire Wire Line
-	7150 4700 6750 4700
-Wire Wire Line
-	6750 4700 6750 4250
-Connection ~ 6750 3850
-Wire Wire Line
-	6750 3850 7350 3850
-Wire Wire Line
-	7300 4250 6750 4250
-Connection ~ 6750 4250
-Wire Wire Line
-	6750 4250 6750 3850
-Wire Wire Line
-	7550 3850 7950 3850
-Wire Wire Line
-	7950 3850 7950 4250
-Wire Wire Line
-	7950 4800 7750 4800
-Wire Wire Line
-	7600 4250 7950 4250
-Connection ~ 7950 4250
-Wire Wire Line
-	7950 4250 7950 4800
-$Comp
-L power:GNDREF #PWR030
-U 1 1 5D8F88ED
-P 6750 5150
-F 0 "#PWR030" H 6750 4900 50  0001 C CNN
-F 1 "GNDREF" H 6755 4977 50  0000 C CNN
-F 2 "" H 6750 5150 50  0001 C CNN
-F 3 "" H 6750 5150 50  0001 C CNN
-	1    6750 5150
-	1    0    0    -1  
-$EndComp
-Wire Wire Line
-	6750 5150 6750 4900
-Wire Wire Line
-	6750 4900 7150 4900
-$Comp
-L Device:R_US R17
-U 1 1 5D8F8D02
-P 8300 4200
-F 0 "R17" H 8368 4246 50  0000 L CNN
-F 1 "23K5" H 8368 4155 50  0000 L CNN
-F 2 "" V 8340 4190 50  0001 C CNN
-F 3 "~" H 8300 4200 50  0001 C CNN
-	1    8300 4200
-	1    0    0    -1  
-$EndComp
-$Comp
-L power:GNDREF #PWR027
-U 1 1 5D8F8DD4
-P 8300 4350
-F 0 "#PWR027" H 8300 4100 50  0001 C CNN
-F 1 "GNDREF" H 8305 4177 50  0000 C CNN
-F 2 "" H 8300 4350 50  0001 C CNN
-F 3 "" H 8300 4350 50  0001 C CNN
-	1    8300 4350
-	1    0    0    -1  
-$EndComp
-$Comp
-L Device:C_Small C14
-U 1 1 5D8F90EA
-P 8650 3850
-F 0 "C14" V 8421 3850 50  0000 C CNN
-F 1 "10uF" V 8512 3850 50  0000 C CNN
-F 2 "" H 8650 3850 50  0001 C CNN
-F 3 "~" H 8650 3850 50  0001 C CNN
-	1    8650 3850
-	0    1    1    0   
-$EndComp
-Text HLabel 9100 3850 2    50   Input ~ 0
-SMI_SIGNAL
-Wire Wire Line
-	7950 3850 8300 3850
-Connection ~ 7950 3850
-Wire Wire Line
-	8300 4050 8300 3850
-Connection ~ 8300 3850
-Wire Wire Line
-	8300 3850 8550 3850
-Wire Wire Line
-	9100 3850 8750 3850
 Wire Notes Line
 	5300 4000 5300 5050
 Wire Notes Line
@@ -404,4 +286,25 @@ Wire Wire Line
 Connection ~ 6200 2250
 Wire Wire Line
 	6200 2250 6200 2650
+$Sheet
+S 7100 3600 1550 1200
+U 5DA8AE19
+F0 "Filtering" 50
+F1 "smi_filter.sch" 50
+F2 "PD_SIGNAL" I L 7100 3850 50 
+F3 "SMI_SIGNAL_AC" I R 8650 3850 50 
+F4 "SMI_SIGNAL_DC" I R 8650 4000 50 
+$EndSheet
+Wire Wire Line
+	6300 3850 7100 3850
+Text HLabel 9250 3850 2    50   Input ~ 0
+SMI_SIGNAL_AC
+Wire Wire Line
+	8650 3850 9250 3850
+Text HLabel 9250 4000 2    50   Input ~ 0
+SMI_SIGNAL_DC
+Wire Wire Line
+	9250 4000 8650 4000
+Text Notes 4050 3550 0    50   ~ 0
+todo: trimmer pot
 $EndSCHEMATC

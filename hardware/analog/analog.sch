@@ -4,7 +4,7 @@ EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
 encoding utf-8
-Sheet 1 6
+Sheet 1 7
 Title ""
 Date ""
 Rev ""
@@ -105,7 +105,8 @@ F0 "Laser" 50
 F1 "laser.sch" 50
 F2 "LD_POWER" I L 7950 5350 50 
 F3 "PD_SIGNAL" I L 7950 5250 50 
-F4 "SMI_SIGNAL" I L 7950 4700 50 
+F4 "SMI_SIGNAL_AC" I L 7950 4850 50 
+F5 "SMI_SIGNAL_DC" I L 7950 4700 50 
 $EndSheet
 $Comp
 L Connector:Conn_01x03_Female J4
@@ -120,17 +121,6 @@ F 3 "~" H 7000 5350 50  0001 C CNN
 $EndComp
 Text Notes 6300 5400 0    50   ~ 0
 to laser diode\n(offboard)
-$Comp
-L Connector:Conn_01x05_Female J2
-U 1 1 5D905FF1
-P 8300 1800
-F 0 "J2" H 8327 1826 50  0000 L CNN
-F 1 "DAQ CONN" H 8327 1735 50  0000 L CNN
-F 2 "" H 8300 1800 50  0001 C CNN
-F 3 "~" H 8300 1800 50  0001 C CNN
-	1    8300 1800
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7200 5250 7950 5250
 Wire Wire Line
@@ -165,24 +155,45 @@ Wire Wire Line
 Wire Wire Line
 	5600 4700 5600 1800
 Wire Wire Line
-	7950 4700 5750 4700
-Wire Wire Line
-	5750 4700 5750 1900
-Wire Wire Line
 	5750 1900 8100 1900
 $Comp
 L power:GNDREF #PWR01
 U 1 1 5D907722
-P 7150 2300
-F 0 "#PWR01" H 7150 2050 50  0001 C CNN
-F 1 "GNDREF" H 7155 2127 50  0000 C CNN
-F 2 "" H 7150 2300 50  0001 C CNN
-F 3 "" H 7150 2300 50  0001 C CNN
-	1    7150 2300
+P 7150 2400
+F 0 "#PWR01" H 7150 2150 50  0001 C CNN
+F 1 "GNDREF" H 7155 2227 50  0000 C CNN
+F 2 "" H 7150 2400 50  0001 C CNN
+F 3 "" H 7150 2400 50  0001 C CNN
+	1    7150 2400
 	1    0    0    -1  
 $EndComp
 Wire Wire Line
-	7150 2300 7150 2000
+	7150 2400 7150 2100
 Wire Wire Line
-	7150 2000 8100 2000
+	7150 2100 8100 2100
+Wire Wire Line
+	7950 4850 5750 4850
+Wire Wire Line
+	5750 1900 5750 4850
+$Comp
+L Connector:Conn_01x06_Female J?
+U 1 1 5DAC4DEB
+P 8300 1800
+F 0 "J?" H 8327 1776 50  0000 L CNN
+F 1 "Conn_01x06_Female" H 8327 1685 50  0000 L CNN
+F 2 "" H 8300 1800 50  0001 C CNN
+F 3 "~" H 8300 1800 50  0001 C CNN
+	1    8300 1800
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	7950 4700 5900 4700
+Wire Wire Line
+	5900 4700 5900 2000
+Wire Wire Line
+	5900 2000 8100 2000
+Text Notes 6500 1500 0    50   ~ 0
+outputs between +/- 0.75V
+Text Notes 5100 900  0    100  ~ 20
+High Level Connections
 $EndSCHEMATC
