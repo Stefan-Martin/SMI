@@ -1,4 +1,5 @@
 EESchema Schematic File Version 4
+LIBS:prototype-cache
 EELAYER 26 0
 EELAYER END
 $Descr A4 11693 8268
@@ -536,4 +537,50 @@ Text Label 3550 4000 0    50   ~ 0
 5V
 Wire Wire Line
 	4350 4000 5500 4000
+$Comp
+L Mechanical:MountingHole H1
+U 1 1 5DD2A782
+P 9300 5650
+F 0 "H1" H 9400 5696 50  0000 L CNN
+F 1 "MountingHole" H 9400 5605 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad" H 9300 5650 50  0001 C CNN
+F 3 "~" H 9300 5650 50  0001 C CNN
+	1    9300 5650
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H3
+U 1 1 5DD2AAB6
+P 9300 5950
+F 0 "H3" H 9400 5996 50  0000 L CNN
+F 1 "MountingHole" H 9400 5905 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad" H 9300 5950 50  0001 C CNN
+F 3 "~" H 9300 5950 50  0001 C CNN
+	1    9300 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H4
+U 1 1 5DD2AAF0
+P 10200 5950
+F 0 "H4" H 10300 5996 50  0000 L CNN
+F 1 "MountingHole" H 10300 5905 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad" H 10200 5950 50  0001 C CNN
+F 3 "~" H 10200 5950 50  0001 C CNN
+	1    10200 5950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Mechanical:MountingHole H2
+U 1 1 5DD2AB37
+P 10200 5650
+F 0 "H2" H 10300 5696 50  0000 L CNN
+F 1 "MountingHole" H 10300 5605 50  0000 L CNN
+F 2 "Mounting_Holes:MountingHole_3.2mm_M3_Pad" H 10200 5650 50  0001 C CNN
+F 3 "~" H 10200 5650 50  0001 C CNN
+	1    10200 5650
+	1    0    0    -1  
+$EndComp
+Text Notes 9250 5450 0    50   ~ 0
+Mechanical
 $EndSCHEMATC
