@@ -1,0 +1,309 @@
+EESchema Schematic File Version 4
+LIBS:ambient-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 6
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text HLabel 6750 2850 2    50   Input ~ 0
+PRESSURE
+$Comp
+L Sensor_Pressure:MPXA6115A U?
+U 1 1 5D8EF664
+P 4200 2400
+AR Path="/5DD199FA/5D8EF664" Ref="U?"  Part="1" 
+AR Path="/5DD1C8AB/5D8EF664" Ref="U6"  Part="1" 
+F 0 "U6" H 3770 2446 50  0000 R CNN
+F 1 "MPXA6115A" H 3770 2355 50  0000 R CNN
+F 2 "Housings_DIP:SMDIP-8_W9.53mm" H 3700 2050 50  0001 C CNN
+F 3 "http://www.nxp.com/files/sensors/doc/data_sheet/MPXA6115A.pdf" H 4200 3000 50  0001 C CNN
+	1    4200 2400
+	1    0    0    -1  
+$EndComp
+Text Notes 5000 1800 0    50   ~ 0
+Current draw: max 10mA
+$Comp
+L power:+5V #PWR?
+U 1 1 5D8EF8B9
+P 4200 1350
+AR Path="/5DD199FA/5D8EF8B9" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5D8EF8B9" Ref="#PWR037"  Part="1" 
+F 0 "#PWR037" H 4200 1200 50  0001 C CNN
+F 1 "+5V" H 4215 1523 50  0000 C CNN
+F 2 "" H 4200 1350 50  0001 C CNN
+F 3 "" H 4200 1350 50  0001 C CNN
+	1    4200 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5D8EF91F
+P 3900 1900
+AR Path="/5DD199FA/5D8EF91F" Ref="C?"  Part="1" 
+AR Path="/5DD1C8AB/5D8EF91F" Ref="C10"  Part="1" 
+F 0 "C10" V 3671 1900 50  0000 C CNN
+F 1 "C_Small" V 3762 1900 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 3900 1900 50  0001 C CNN
+F 3 "~" H 3900 1900 50  0001 C CNN
+	1    3900 1900
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4000 1900 4200 1900
+Connection ~ 4200 1900
+Wire Wire Line
+	4200 1900 4200 2100
+Wire Wire Line
+	3550 1950 3550 1900
+Wire Wire Line
+	3550 1900 3800 1900
+$Comp
+L Device:R_US R?
+U 1 1 5D8EFC63
+P 5150 2550
+AR Path="/5DD199FA/5D8EFC63" Ref="R?"  Part="1" 
+AR Path="/5DD1C8AB/5D8EFC63" Ref="R17"  Part="1" 
+F 0 "R17" H 5218 2596 50  0000 L CNN
+F 1 "47K" H 5218 2505 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5190 2540 50  0001 C CNN
+F 3 "~" H 5150 2550 50  0001 C CNN
+	1    5150 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5D8EFCB9
+P 5150 2950
+AR Path="/5DD199FA/5D8EFCB9" Ref="R?"  Part="1" 
+AR Path="/5DD1C8AB/5D8EFCB9" Ref="R18"  Part="1" 
+F 0 "R18" H 5218 2996 50  0000 L CNN
+F 1 "8K2" H 5218 2905 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5190 2940 50  0001 C CNN
+F 3 "~" H 5150 2950 50  0001 C CNN
+	1    5150 2950
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4200 2700 4200 3100
+Connection ~ 4200 3100
+Wire Wire Line
+	4200 3100 4200 3200
+Wire Wire Line
+	5150 2700 5150 2750
+Wire Wire Line
+	5700 2750 5150 2750
+Connection ~ 5150 2750
+Wire Wire Line
+	5150 2750 5150 2800
+Wire Wire Line
+	4200 1350 4200 1900
+$Comp
+L power:GND #PWR?
+U 1 1 5DD1EF4A
+P 4200 3200
+AR Path="/5DD199FA/5DD1EF4A" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1EF4A" Ref="#PWR039"  Part="1" 
+F 0 "#PWR039" H 4200 2950 50  0001 C CNN
+F 1 "GND" H 4205 3027 50  0000 C CNN
+F 2 "" H 4200 3200 50  0001 C CNN
+F 3 "" H 4200 3200 50  0001 C CNN
+	1    4200 3200
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DD1EF88
+P 3550 1950
+AR Path="/5DD199FA/5DD1EF88" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1EF88" Ref="#PWR038"  Part="1" 
+F 0 "#PWR038" H 3550 1700 50  0001 C CNN
+F 1 "GND" H 3555 1777 50  0000 C CNN
+F 2 "" H 3550 1950 50  0001 C CNN
+F 3 "" H 3550 1950 50  0001 C CNN
+	1    3550 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L Sensor_Pressure:MPXA6115A U?
+U 1 1 5DD1F673
+P 4150 5050
+AR Path="/5DD199FA/5DD1F673" Ref="U?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F673" Ref="U8"  Part="1" 
+F 0 "U8" H 3720 5096 50  0000 R CNN
+F 1 "MPXA6115A" H 3720 5005 50  0000 R CNN
+F 2 "Housings_DIP:SMDIP-8_W9.53mm" H 3650 4700 50  0001 C CNN
+F 3 "http://www.nxp.com/files/sensors/doc/data_sheet/MPXA6115A.pdf" H 4150 5650 50  0001 C CNN
+	1    4150 5050
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+5V #PWR?
+U 1 1 5DD1F67B
+P 4150 4000
+AR Path="/5DD199FA/5DD1F67B" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F67B" Ref="#PWR040"  Part="1" 
+F 0 "#PWR040" H 4150 3850 50  0001 C CNN
+F 1 "+5V" H 4165 4173 50  0000 C CNN
+F 2 "" H 4150 4000 50  0001 C CNN
+F 3 "" H 4150 4000 50  0001 C CNN
+	1    4150 4000
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:C_Small C?
+U 1 1 5DD1F681
+P 3850 4550
+AR Path="/5DD199FA/5DD1F681" Ref="C?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F681" Ref="C11"  Part="1" 
+F 0 "C11" V 3621 4550 50  0000 C CNN
+F 1 "C_Small" V 3712 4550 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 3850 4550 50  0001 C CNN
+F 3 "~" H 3850 4550 50  0001 C CNN
+	1    3850 4550
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	3950 4550 4150 4550
+Connection ~ 4150 4550
+Wire Wire Line
+	4150 4550 4150 4750
+Wire Wire Line
+	3500 4600 3500 4550
+Wire Wire Line
+	3500 4550 3750 4550
+$Comp
+L Device:R_US R?
+U 1 1 5DD1F694
+P 5100 5200
+AR Path="/5DD199FA/5DD1F694" Ref="R?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F694" Ref="R19"  Part="1" 
+F 0 "R19" H 5168 5246 50  0000 L CNN
+F 1 "470K" H 5168 5155 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5140 5190 50  0001 C CNN
+F 3 "~" H 5100 5200 50  0001 C CNN
+	1    5100 5200
+	1    0    0    -1  
+$EndComp
+$Comp
+L Device:R_US R?
+U 1 1 5DD1F69B
+P 5100 5600
+AR Path="/5DD199FA/5DD1F69B" Ref="R?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F69B" Ref="R20"  Part="1" 
+F 0 "R20" H 5168 5646 50  0000 L CNN
+F 1 "82K" H 5168 5555 50  0000 L CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 5140 5590 50  0001 C CNN
+F 3 "~" H 5100 5600 50  0001 C CNN
+	1    5100 5600
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4150 5350 4150 5750
+Connection ~ 4150 5750
+Wire Wire Line
+	4150 5750 4150 5850
+Wire Wire Line
+	5100 5350 5100 5400
+Wire Wire Line
+	5650 5400 5100 5400
+Connection ~ 5100 5400
+Wire Wire Line
+	5100 5400 5100 5450
+Wire Wire Line
+	4150 4000 4150 4550
+$Comp
+L power:GND #PWR?
+U 1 1 5DD1F6B2
+P 4150 5850
+AR Path="/5DD199FA/5DD1F6B2" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F6B2" Ref="#PWR042"  Part="1" 
+F 0 "#PWR042" H 4150 5600 50  0001 C CNN
+F 1 "GND" H 4155 5677 50  0000 C CNN
+F 2 "" H 4150 5850 50  0001 C CNN
+F 3 "" H 4150 5850 50  0001 C CNN
+	1    4150 5850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DD1F6B8
+P 3500 4600
+AR Path="/5DD199FA/5DD1F6B8" Ref="#PWR?"  Part="1" 
+AR Path="/5DD1C8AB/5DD1F6B8" Ref="#PWR041"  Part="1" 
+F 0 "#PWR041" H 3500 4350 50  0001 C CNN
+F 1 "GND" H 3505 4427 50  0000 C CNN
+F 2 "" H 3500 4600 50  0001 C CNN
+F 3 "" H 3500 4600 50  0001 C CNN
+	1    3500 4600
+	1    0    0    -1  
+$EndComp
+$Comp
+L Amplifier_Operational:TL082 U7
+U 1 1 5DD2030C
+P 6000 2850
+F 0 "U7" H 6000 3217 50  0000 C CNN
+F 1 "TL082" H 6000 3126 50  0000 C CNN
+F 2 "" H 6000 2850 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 6000 2850 50  0001 C CNN
+	1    6000 2850
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5700 2950 5600 2950
+Wire Wire Line
+	5600 2950 5600 3350
+Wire Wire Line
+	5600 3350 6550 3350
+Wire Wire Line
+	6550 3350 6550 2850
+Wire Wire Line
+	6550 2850 6300 2850
+Wire Wire Line
+	6750 2850 6550 2850
+Connection ~ 6550 2850
+Wire Wire Line
+	4600 2400 5150 2400
+Wire Wire Line
+	4200 3100 5150 3100
+Wire Wire Line
+	4150 5750 5100 5750
+Wire Wire Line
+	4550 5050 5100 5050
+$Comp
+L Amplifier_Operational:TL082 U7
+U 2 1 5DD21B6E
+P 5950 5500
+F 0 "U7" H 5950 5867 50  0000 C CNN
+F 1 "TL082" H 5950 5776 50  0000 C CNN
+F 2 "" H 5950 5500 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5950 5500 50  0001 C CNN
+	2    5950 5500
+	1    0    0    -1  
+$EndComp
+Text HLabel 6600 5500 2    50   Input ~ 0
+PRESSURE_BK
+Wire Wire Line
+	6600 5500 6500 5500
+Wire Wire Line
+	5650 5600 5550 5600
+Wire Wire Line
+	5550 5600 5550 5950
+Wire Wire Line
+	5550 5950 6500 5950
+Wire Wire Line
+	6500 5950 6500 5500
+Connection ~ 6500 5500
+Wire Wire Line
+	6500 5500 6250 5500
+Text Notes 7550 2950 0    50   ~ 0
+Buffer the output of the sensor\nto prevent crosstalk on the DAQ
+$EndSCHEMATC
