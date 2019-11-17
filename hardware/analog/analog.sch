@@ -20,7 +20,7 @@ U 1 1 5D8A52A8
 P 1500 6500
 F 0 "J5" H 1555 6825 50  0000 C CNN
 F 1 "Barrel_Jack" H 1555 6734 50  0000 C CNN
-F 2 "" H 1550 6460 50  0001 C CNN
+F 2 "Connect:BARREL_JACK" H 1550 6460 50  0001 C CNN
 F 3 "~" H 1550 6460 50  0001 C CNN
 	1    1500 6500
 	1    0    0    -1  
@@ -54,7 +54,7 @@ U 1 1 5D8EEB88
 P 1750 1650
 F 0 "J1" H 1644 1325 50  0000 C CNN
 F 1 "RTD conn" H 1644 1416 50  0000 C CNN
-F 2 "" H 1750 1650 50  0001 C CNN
+F 2 "Connectors_Phoenix:PhoenixContact_MCV-G_02x3.50mm_Vertical" H 1750 1650 50  0001 C CNN
 F 3 "~" H 1750 1650 50  0001 C CNN
 	1    1750 1650
 	-1   0    0    1   
@@ -87,7 +87,7 @@ U 1 1 5D8EEFEF
 P 1750 2850
 F 0 "J3" H 1644 2525 50  0000 C CNN
 F 1 "RTD conn" H 1644 2616 50  0000 C CNN
-F 2 "" H 1750 2850 50  0001 C CNN
+F 2 "Connectors_Phoenix:PhoenixContact_MCV-G_02x3.50mm_Vertical" H 1750 2850 50  0001 C CNN
 F 3 "~" H 1750 2850 50  0001 C CNN
 	1    1750 2850
 	-1   0    0    1   
@@ -114,7 +114,7 @@ U 1 1 5D905871
 P 7000 5350
 F 0 "J4" H 6894 5025 50  0000 C CNN
 F 1 "Laser Diode Conn" H 6894 5116 50  0000 C CNN
-F 2 "" H 7000 5350 50  0001 C CNN
+F 2 "Connectors_Phoenix:PhoenixContact_MCV-G_03x3.50mm_Vertical" H 7000 5350 50  0001 C CNN
 F 3 "~" H 7000 5350 50  0001 C CNN
 	1    7000 5350
 	-1   0    0    1   
@@ -176,12 +176,12 @@ Wire Wire Line
 Wire Wire Line
 	5750 1900 5750 4850
 $Comp
-L Connector:Conn_01x06_Female J?
+L Connector:Conn_01x06_Female J2
 U 1 1 5DAC4DEB
 P 8300 1800
-F 0 "J?" H 8327 1776 50  0000 L CNN
+F 0 "J2" H 8327 1776 50  0000 L CNN
 F 1 "Conn_01x06_Female" H 8327 1685 50  0000 L CNN
-F 2 "" H 8300 1800 50  0001 C CNN
+F 2 "Connectors_Phoenix:PhoenixContact_MCV-G_06x3.50mm_Vertical" H 8300 1800 50  0001 C CNN
 F 3 "~" H 8300 1800 50  0001 C CNN
 	1    8300 1800
 	1    0    0    -1  
