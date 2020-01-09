@@ -4,7 +4,9 @@ import numpy as np
 import comedi
 from multiprocessing.pool import ThreadPool
 
-def sample_time_async(channels, gains, frequency_hz, scan_time_s, comedi_port='/dev/comedi0', buffer_size=1000000000):
+
+def sample_time_async(channels, gains, frequency_hz, scan_time_s,
+                      comedi_port='/dev/comedi0', buffer_size=1000000000):
     """Asyncronously sample multiple channels for a fixed amount of time.
 
     This function uses a ThreadPool to collect data in the background. Call
