@@ -6,8 +6,6 @@ Noisy=1;
 if Noisy
     out = awgn(out,SNR)
 end
-csvwrite('C:\Users\TEMP.NEXUS\Desktop\out.csv',out);
-csvwrite('C:\Users\TEMP.NEXUS\Desktop\in.csv',in)
 ax1 = subplot(2,1,1);
 plot(ax1,out)
 title(ax1, "Input and Resulting SMI Signal")
