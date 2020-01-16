@@ -1,4 +1,4 @@
-#Setup Instructions 
+# Setup Instructions 
 
 1. sudo apt-get install libusb-dev
 2. Install 'linux' package from install disk files
