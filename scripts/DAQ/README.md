@@ -1,4 +1,4 @@
-#Setup Instructions 
+# Setup Instructions 
 
 1. install comedilib from source as per instuctions in INSTALL (https://github.com/Linux-Comedi/comedilib/tree/master/swig/python)
 2. install python bindings in swig/python as per instructions in INSTALL
