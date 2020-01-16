@@ -1,8 +1,11 @@
-"""Example of how to use stage."""
+
 
 from __future__ import print_function
 
+import time
 from pipython import GCSDevice, pitools
+from scripts.DAQ import comedi_async
+import numpy as np
 
 CONTROLLERNAME = 'E-873'  # 'C-884' will also work
 STAGES = None
@@ -35,13 +38,20 @@ def main():
               'current position: {},\n'
               'current max velocity: {},\n'
               'current max accelereation: {}'.format(rangemin, rangemax, curpos, curvel, curacc))
+
+
         pidevice.VEL(pidevice.axes[0],0.5) # set velocity to 0.3 mm/s
         pidevice.ACC(pidevice.axes[0], 0.5) # set acceleration to 0.1 mm/s^2
         pidevice.MOV(pidevice.axes[0], 2)
         while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
             pass
+        print('starting recording')
+        res = comedi_async.sample_time_async([0],[1], 300000, 20)
+
         pidevice.VEL(pidevice.axes[0], 0.005)  # set velocity to 0.3 mm/s
         pidevice.ACC(pidevice.axes[0], 0.01)
+
+        time.sleep(5)
         while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
             pass
         print('moving out')
@@ -52,6 +62,10 @@ def main():
         pidevice.MOV(pidevice.axes[0], 2)
         while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
             pass
+        time.sleep(5)
+        np.save('5mum_s_solid_OD06.npy', res.get())
+        print('recording done')
+        print("")
 
 if __name__ == '__main__':
     main()
