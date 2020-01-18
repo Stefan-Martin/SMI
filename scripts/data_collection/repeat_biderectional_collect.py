@@ -48,28 +48,29 @@ def main():
             pass
         print('starting recording')
 
-        res = comedi_async.sample_time_async([0],[1], 300000, 15)
+        for i in range(200):
+            res = comedi_async.sample_time_async([0],[1], 300000, 20)
 
-        pidevice.VEL(pidevice.axes[0], 0.007)  # set velocity to 0.3 mm/s
-        pidevice.ACC(pidevice.axes[0], 0.01)
+            pidevice.VEL(pidevice.axes[0], 0.005)  # set velocity to 0.3 mm/s
+            pidevice.ACC(pidevice.axes[0], 0.01)
 
-        time.sleep(5)
-        while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
-            pass
-        print('moving out')
-        pidevice.MOV(pidevice.axes[0],1.975)
-        while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
-            pass
-        print('moving back')
-        pidevice.MOV(pidevice.axes[0], 2)
-        while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
-            pass
-        time.sleep(5)
-        output = '/home/trevor/smi_data/speed/17-01-2020-2'
-        os.makedirs(output, exist_ok=True)
-        np.save(os.path.join(output, '15mum_s_solid_OD04.npy'), res.get())
-        print('recording done')
-        print("")
+            time.sleep(5)
+            while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
+                pass
+            print('moving out')
+            pidevice.MOV(pidevice.axes[0],1.975)
+            while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
+                pass
+            print('moving back')
+            pidevice.MOV(pidevice.axes[0], 2)
+            while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
+                pass
+            time.sleep(5)
+            output = '/home/trevor/smi_data/speed/17-01-2020'
+            os.makedirs(output, exist_ok=True)
+            np.save(os.path.join(output, '5mum_s_solid_OD04_{}.npy'.format(i)), res.get())
+            print('recording done')
+            print("")
 
 if __name__ == '__main__':
     main()
