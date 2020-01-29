@@ -48,9 +48,9 @@ def main():
             pass
         print('starting recording')
 
-        res = comedi_async.sample_time_async([0],[1], 300000, 15)
+        res = comedi_async.sample_time_async([0],[1], 60000, 20)
 
-        pidevice.VEL(pidevice.axes[0], 0.007)  # set velocity to 0.3 mm/s
+        pidevice.VEL(pidevice.axes[0], 0.005)  # set velocity to 0.3 mm/s
         pidevice.ACC(pidevice.axes[0], 0.01)
 
         time.sleep(5)
@@ -65,9 +65,9 @@ def main():
         while pidevice.IsMoving(axes=pidevice.axes[0])['1']:
             pass
         time.sleep(5)
-        output = '/home/trevor/smi_data/speed/17-01-2020-2'
+        output = '/home/trevor/smi_data/OD_sweep/24-01-20_3'
         os.makedirs(output, exist_ok=True)
-        np.save(os.path.join(output, '15mum_s_solid_OD04.npy'), res.get())
+        np.save(os.path.join(output, '5mum_s_solid_OD03_16.npy'), res.get())
         print('recording done')
         print("")
 
