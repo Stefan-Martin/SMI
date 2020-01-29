@@ -1,0 +1,310 @@
+EESchema Schematic File Version 4
+LIBS:analog-cache
+EELAYER 26 0
+EELAYER END
+$Descr A4 11693 8268
+encoding utf-8
+Sheet 6 7
+Title ""
+Date ""
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Text HLabel 5100 3850 2    50   Input ~ 0
+LD_POWER
+Text HLabel 6300 3850 0    50   Input ~ 0
+PD_SIGNAL
+$Comp
+L smi:LT1460 U12
+U 1 1 5D8F6B80
+P 3550 3850
+F 0 "U12" H 3550 4115 50  0000 C CNN
+F 1 "LT1460" H 3550 4024 50  0000 C CNN
+F 2 "TO_SOT_Packages_SMD:SOT-23_Handsoldering" H 3550 3850 50  0001 C CNN
+F 3 "" H 3550 3850 50  0001 C CNN
+	1    3550 3850
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR025
+U 1 1 5D8F6F3A
+P 2400 3650
+F 0 "#PWR025" H 2400 3500 50  0001 C CNN
+F 1 "+9V" H 2415 3823 50  0000 C CNN
+F 2 "" H 2400 3650 50  0001 C CNN
+F 3 "" H 2400 3650 50  0001 C CNN
+	1    2400 3650
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2400 3650 2400 3850
+Wire Wire Line
+	2400 3850 2750 3850
+$Comp
+L Device:C_Small C15
+U 1 1 5D8F6F77
+P 2750 4100
+F 0 "C15" H 2842 4146 50  0000 L CNN
+F 1 "0.1uF" H 2842 4055 50  0000 L CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 2750 4100 50  0001 C CNN
+F 3 "~" H 2750 4100 50  0001 C CNN
+	1    2750 4100
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GNDREF #PWR026
+U 1 1 5D8F702F
+P 2750 4200
+F 0 "#PWR026" H 2750 3950 50  0001 C CNN
+F 1 "GNDREF" H 2755 4027 50  0000 C CNN
+F 2 "" H 2750 4200 50  0001 C CNN
+F 3 "" H 2750 4200 50  0001 C CNN
+	1    2750 4200
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	2750 4000 2750 3850
+Connection ~ 2750 3850
+Wire Wire Line
+	2750 3850 3100 3850
+$Comp
+L Amplifier_Operational:TL082 U11
+U 1 1 5D8F71C1
+P 4200 4800
+F 0 "U11" H 4200 4433 50  0000 C CNN
+F 1 "TL082" H 4200 4524 50  0000 C CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 4200 4800 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 4200 4800 50  0001 C CNN
+	1    4200 4800
+	-1   0    0    1   
+$EndComp
+$Comp
+L Device:R_US R16
+U 1 1 5D8F72AC
+P 4350 3850
+F 0 "R16" V 4145 3850 50  0000 C CNN
+F 1 "165R" V 4236 3850 50  0000 C CNN
+F 2 "Resistor_SMD:R_0805_2012Metric_Pad1.15x1.40mm_HandSolder" V 4390 3840 50  0001 C CNN
+F 3 "~" H 4350 3850 50  0001 C CNN
+	1    4350 3850
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	4000 3850 4200 3850
+Wire Wire Line
+	4700 3850 4700 4700
+Wire Wire Line
+	4700 4700 4500 4700
+Wire Wire Line
+	3550 4350 3550 4800
+Wire Wire Line
+	3550 4800 3900 4800
+$Comp
+L power:GNDREF #PWR028
+U 1 1 5D8F7811
+P 3550 5050
+F 0 "#PWR028" H 3550 4800 50  0001 C CNN
+F 1 "GNDREF" H 3555 4877 50  0000 C CNN
+F 2 "" H 3550 5050 50  0001 C CNN
+F 3 "" H 3550 5050 50  0001 C CNN
+	1    3550 5050
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	3550 5050 3550 4800
+Connection ~ 3550 4800
+$Comp
+L power:GNDREF #PWR029
+U 1 1 5D8F78A0
+P 4700 5150
+F 0 "#PWR029" H 4700 4900 50  0001 C CNN
+F 1 "GNDREF" H 4705 4977 50  0000 C CNN
+F 2 "" H 4700 5150 50  0001 C CNN
+F 3 "" H 4700 5150 50  0001 C CNN
+	1    4700 5150
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	4700 5150 4700 4900
+Wire Wire Line
+	4700 4900 4500 4900
+Wire Wire Line
+	4500 3850 4700 3850
+Connection ~ 4700 3850
+Wire Wire Line
+	4700 3850 5100 3850
+Wire Notes Line
+	5300 4000 5300 5050
+Wire Notes Line
+	5300 5050 6100 5050
+Wire Notes Line
+	6100 5050 6100 4000
+Wire Notes Line
+	5700 5050 5700 5250
+Wire Notes Line
+	5550 5250 5850 5250
+Wire Notes Line
+	5600 5300 5800 5300
+Wire Notes Line
+	5650 5350 5750 5350
+Wire Notes Line
+	5200 4300 5400 4300
+Wire Notes Line
+	5400 4300 5300 4500
+Wire Notes Line
+	5200 4300 5300 4500
+Wire Notes Line
+	5200 4500 5400 4500
+Wire Notes Line
+	5450 4350 5550 4450
+Wire Notes Line
+	5550 4450 5550 4400
+Wire Notes Line
+	5550 4450 5500 4450
+Wire Notes Line
+	5450 4450 5550 4550
+Wire Notes Line
+	5550 4500 5550 4550
+Wire Notes Line
+	5550 4550 5500 4550
+Wire Notes Line
+	6000 4300 6200 4300
+Wire Notes Line
+	6100 4300 6000 4500
+Wire Notes Line
+	6000 4500 6200 4500
+Wire Notes Line
+	6200 4500 6100 4300
+Wire Notes Line
+	6250 4350 6350 4450
+Wire Notes Line
+	6250 4400 6250 4350
+Wire Notes Line
+	6300 4350 6250 4350
+Wire Notes Line
+	6350 4550 6250 4450
+Wire Notes Line
+	6300 4450 6250 4450
+Wire Notes Line
+	6250 4500 6250 4450
+Text Notes 5500 4850 0    50   ~ 0
+(offboard)
+$Comp
+L Amplifier_Operational:TL082 U11
+U 3 1 5D901CE1
+P 5550 2250
+F 0 "U11" H 5508 2296 50  0000 L CNN
+F 1 "TL082" H 5508 2205 50  0000 L CNN
+F 2 "Housings_SOIC:SOIC-8_3.9x4.9mm_Pitch1.27mm" H 5550 2250 50  0001 C CNN
+F 3 "http://www.ti.com/lit/ds/symlink/tl081.pdf" H 5550 2250 50  0001 C CNN
+	3    5550 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:+9V #PWR022
+U 1 1 5D901DE3
+P 5450 1750
+F 0 "#PWR022" H 5450 1600 50  0001 C CNN
+F 1 "+9V" H 5465 1923 50  0000 C CNN
+F 2 "" H 5450 1750 50  0001 C CNN
+F 3 "" H 5450 1750 50  0001 C CNN
+	1    5450 1750
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5450 1750 5450 1900
+$Comp
+L power:-9V #PWR024
+U 1 1 5D9022DF
+P 5450 2800
+F 0 "#PWR024" H 5450 2675 50  0001 C CNN
+F 1 "-9V" H 5465 2973 50  0000 C CNN
+F 2 "" H 5450 2800 50  0001 C CNN
+F 3 "" H 5450 2800 50  0001 C CNN
+	1    5450 2800
+	-1   0    0    1   
+$EndComp
+Wire Wire Line
+	5450 2800 5450 2650
+$Comp
+L Device:C_Small C11
+U 1 1 5D902821
+P 5850 1900
+F 0 "C11" V 5621 1900 50  0000 C CNN
+F 1 "0.1uF" V 5712 1900 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 5850 1900 50  0001 C CNN
+F 3 "~" H 5850 1900 50  0001 C CNN
+	1    5850 1900
+	0    1    1    0   
+$EndComp
+$Comp
+L Device:C_Small C12
+U 1 1 5D9028A1
+P 5850 2650
+F 0 "C12" V 5621 2650 50  0000 C CNN
+F 1 "0.1uF" V 5712 2650 50  0000 C CNN
+F 2 "Capacitor_SMD:C_0805_2012Metric_Pad1.15x1.40mm_HandSolder" H 5850 2650 50  0001 C CNN
+F 3 "~" H 5850 2650 50  0001 C CNN
+	1    5850 2650
+	0    1    1    0   
+$EndComp
+Wire Wire Line
+	5750 1900 5450 1900
+Connection ~ 5450 1900
+Wire Wire Line
+	5450 1900 5450 1950
+Wire Wire Line
+	5750 2650 5450 2650
+Connection ~ 5450 2650
+Wire Wire Line
+	5450 2650 5450 2550
+Wire Wire Line
+	5950 1900 6200 1900
+Wire Wire Line
+	6200 1900 6200 2250
+Wire Wire Line
+	6200 2650 5950 2650
+$Comp
+L power:GNDREF #PWR023
+U 1 1 5D903B37
+P 6650 2300
+F 0 "#PWR023" H 6650 2050 50  0001 C CNN
+F 1 "GNDREF" H 6655 2127 50  0000 C CNN
+F 2 "" H 6650 2300 50  0001 C CNN
+F 3 "" H 6650 2300 50  0001 C CNN
+	1    6650 2300
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	6650 2300 6650 2250
+Wire Wire Line
+	6650 2250 6200 2250
+Connection ~ 6200 2250
+Wire Wire Line
+	6200 2250 6200 2650
+$Sheet
+S 7100 3600 1550 1200
+U 5DA8AE19
+F0 "Filtering" 50
+F1 "smi_filter.sch" 50
+F2 "PD_SIGNAL" I L 7100 3850 50 
+F3 "SMI_SIGNAL_AC" I R 8650 3850 50 
+F4 "SMI_SIGNAL_DC" I R 8650 4000 50 
+$EndSheet
+Wire Wire Line
+	6300 3850 7100 3850
+Text HLabel 9250 3850 2    50   Input ~ 0
+SMI_SIGNAL_AC
+Wire Wire Line
+	8650 3850 9250 3850
+Text HLabel 9250 4000 2    50   Input ~ 0
+SMI_SIGNAL_DC
+Wire Wire Line
+	9250 4000 8650 4000
+Text Notes 4050 3550 0    50   ~ 0
+todo: trimmer pot
+$EndSCHEMATC
