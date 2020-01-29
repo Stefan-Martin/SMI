@@ -3,8 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-base_dir = "/home/trevor/smi_data/OD_sweep/17-01-2020-6/"
-sampling_rate = 300e3
+base_dir = "/home/trevor/smi_data/OD_sweep/24-01-20_3/"
+sampling_rate = 60e3
 max_dac = 2 ** 12
 
 od_data = {
@@ -30,10 +30,13 @@ for OD, file in od_data.items():
 
     axs[order][0].set_ylabel("OD {}".format(OD))
     axs[order][0].set_xlim([9, 9.25])
+    axs[order][1].set_xlim([13.5, 13.75])
+    #axs[order][0].set_ylim([0.45, 0.6])
+    #axs[order][1].set_ylim([0.45, 0.6])
     axs[order][1].plot(np.array(list(range(len(data)))) / sampling_rate,
                        data / max_dac, linewidth=0.1)
 
-    axs[order][1].set_xlim([13.5, 13.75])
+
     if not order ==6:
         axs[order][0].set_xticks([])
         axs[order][1].set_xticks([])
@@ -43,4 +46,5 @@ for OD, file in od_data.items():
 #plot.tight_layout()
 plot.show()
 plot.set_size_inches((9 , 9))
-plot.savefig(os.path.join(base_dir, 'od_sweep.svg'))
+print()
+#plot.savefig(os.path.join(base_dir, 'od_sweep.svg'))
