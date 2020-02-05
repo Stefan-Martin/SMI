@@ -26,10 +26,35 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
+
 std_threshold = 1.5
 sampling_rate = 300000
 process_time_bounds = [8.57, 8.61]
-full_signal=np.load('/home/trevor/smi_data/stage_emi_test/target_on.npy').flatten()/(2 ** 12)
+
+def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,window_size=60):
+    fringes=[]
+    center=window_size
+    for i in candidate_fringes:
+        window=smi_signal[i-window_size:i+window_size] #make sampling rate-based
+        extrema = np.sign(np.diff(window))
+        extrema[2 * window_size-2] = 1
+        for j,k in enumerate (extrema):
+            if extrema[j] == 0:
+                extrema[j]=extrema[j-1]
+        extrema=np.diff(extrema).nonzero()[0]+1
+        a=extrema[extrema < center].max() #first peak above
+        b=extrema[extrema >center].min()  # first peak below
+        plt.plot(window, '-rD', markevery=[a,b])
+        plt.show()
+        #print(abs(window[a]-window[b]))
+        if abs(window[a]-window[b])>jump_threshold:
+            fringes.append(i)
+    return fringes
+std_threshold = 1.5
+sampling_rate = 300000
+process_time_bounds = [8.57, 8.61]
+full_signal=np.load('/home/stefan/smi_data/target_on.npy').flatten()/(2 ** 12)
+
 reduced_signal = full_signal[int(process_time_bounds[0]* sampling_rate):int(process_time_bounds[1] * sampling_rate)]
 times = np.array(list(range(len(reduced_signal))))/sampling_rate + process_time_bounds[0]
 
@@ -41,10 +66,13 @@ mz_std = np.std(mz_steps)
 mz_mean = np.mean(mz_steps)
 pos_fringes, neg_fringes = find_inflections_above_under(mz_steps, mz_mean - (std_threshold * mz_std), mz_mean + (std_threshold * mz_std))
 
+
+pos_fringes=jump_magnitude_threshold(pos_fringes,filtered_signal)
+neg_fringes=jump_magnitude_threshold(neg_fringes,filtered_signal)
+
 filtered_gradient = np.gradient(filtered_signal, axis=0)
 mean_grad = np.mean(filtered_gradient)
 std_grad = np.std(filtered_gradient)
-
 
 possible_fringe_indicies= np.argwhere(np.abs(filtered_gradient - mean_grad) > std_threshold * std_grad).flatten()
 

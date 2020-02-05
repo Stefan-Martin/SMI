@@ -36,3 +36,5 @@ docs/_templates
 # Mac only
 .DS_Store
 
+scripts/venv
+scripts/.idea

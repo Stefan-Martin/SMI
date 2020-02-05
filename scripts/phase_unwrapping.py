@@ -398,8 +398,8 @@ def remove_feedback_dynamics(unwrapped_phase: np.array,
 
 
 
-input_displacement_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_in.csv')
-smi_signal_path = os.path.join(os.getenv('HOME'),'interferometry_data/30_out.csv')
+input_displacement_path = os.path.join(os.getenv('HOME'),'interferometry_data/15SNR_in.csv')
+smi_signal_path = os.path.join(os.getenv('HOME'),'interferometry_data/15SNR_out.csv')
 
 input_diplacement = np.genfromtxt(input_displacement_path, delimiter=',')[:10000]
 smi_signal = np.genfromtxt(smi_signal_path, delimiter=',')[:10000]
@@ -458,5 +458,5 @@ ax3.set_xlim(limits)
 ax4.set_xlim(limits)
 ax5.set_xlim(limits)
 ax5.set_ylim([-0.003,0.003])
-plt.savefig(os.path.join(os.getenv('HOME'),'interferometry_data/c3plot.png'))
+plt.savefig(os.path.join(os.getenv('HOME'),'interferometry_data/15SNRplot.png'))
 
