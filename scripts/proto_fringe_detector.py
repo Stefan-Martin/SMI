@@ -26,7 +26,7 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
-def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.2,window_scale=20):
+def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,window_scale=20):
     fringes=[]
     window_size=int(window_scale*np.ceil(sampling_rate/100000))
     center=window_size
@@ -50,7 +50,7 @@ def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.2,win
             fringes.append(i)
     return fringes
 
-std_threshold = 1.5
+std_threshold = 2.5
 sampling_rate = 300000
 wavelength=639
 process_time_bounds = [5, 9.1]
@@ -105,7 +105,7 @@ axs[1].set_ylabel('Multiscale Edges')
 axs[2].set_xlabel('time (s)')
 
 net_fringes=len(pos_fringes) - len(neg_fringes)
-axs[0].set_title('Net travel: {} um'.format(wavelength*net_fringes/1000))
+axs[0].set_title('Net travel: {} um'.format(wavelength*net_fringes/1000*0.5))
 
 plot.show()
 
