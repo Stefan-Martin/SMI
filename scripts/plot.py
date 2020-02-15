@@ -1,50 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import signal
-from medpy.filter.smoothing import anisotropic_diffusion
-import cv2
 
-a=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_3.npy')
-b=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_4.npy')
-c=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_5.npy')
-d=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_6.npy')
-e=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_7.npy')
-f=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_8.npy')
-g=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_9.npy')
-h=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_10.npy')
-i=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_11.npy')
-j=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_12.npy')
-k=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_13.npy')
-l=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_14.npy')
-m=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_15.npy')
-n=np.load('/home/trevor/smi_data/OD_sweep/24-01-20_3/5mum_s_solid_OD03_16.npy')
-# b = np.load('/home/trevor/smi_data/misc/jank_lens_left.npy')
-# c = np.load('/home/trevor/smi_data/misc/jank_lens_right.npy')
-
-#reduced_signal = a[int(5* 300000):int(8 * 300000)].flatten()
-
-#filt_1 = reduced_signal
-#filt_2 = signal.medfilt(signal.medfilt(reduced_signal, 81), 81)
-#filt_3 = cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),51, 150, 150)
-
-
-
-#b=np.load('/home/trevor/smi_data/stage_emi_test/manual_stage.npy')
-#b=np.load('/home/trevor/smi_data/stage_emi_test/target_off.npy')
-#c=np.load('/home/trevor/smi_data/stage_emi_test/stationary_target.npy')
+a=np.load('/home/stefan/smi_data/14-02-2020/2mm_1.npy')
+b=np.load('/home/stefan/smi_data/14-02-2020/2mm_1_meta.npy')
 
 plot, axs = plt.subplots(nrows=1, ncols=1)
 
-#axs.plot(g, label = '35.6', linewidth = 0.2)
-axs.plot(n, label = '34.5', linewidth = 0.2)
-axs.plot(j, label = '35.0', linewidth = 0.2)
-axs.plot(m, label = '35.6', linewidth = 0.2)
-#axs.plot(k, label = '36.4', linewidth = 0.2)
-#axs.plot(l, label = '36.8', linewidth = 0.2)
+axs.plot(a, label = "OD="+str(b[2]), linewidth = 0.5)
 
 
-# axs.plot(b, label = 'left')
-# axs.plot(c, label = 'right')
 axs.legend()
 plot.show()
 
