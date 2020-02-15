@@ -26,14 +26,22 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
-def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,window_scale=20):
+def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.3,window_scale=2000):
     fringes=[]
     window_size=int(window_scale*np.ceil(sampling_rate/100000))
     center=window_size
     for i in candidate_fringes:
-        window=smi_signal[i-window_size:i+window_size]
+        if i-window_size<0:
+            start=0
+        else:
+            start=i-window_size
+        if i+window_size>len(smi_signal):
+            end=len(smi_signal)
+        else:
+            end=i+window_size
+        window=smi_signal[start:end]
         extrema = np.sign(np.diff(window))
-        extrema[2 * window_size-2] = 1
+        extrema[-1] = 1
         for j,k in enumerate (extrema):
             if extrema[j] == 0:
                 extrema[j]=extrema[j-1] #to avoid treating zero as a sign change we hold the prior value of the derivative
@@ -44,6 +52,7 @@ def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,wi
             continue
         a=peaks_below.max() #index of first peak below
         b=peaks_above.min()  # index of first peak above
+        #print(abs(window[a]-window[b])-jump_threshold*np.std(smi_signal))
         #plt.plot(window, '-rD', markevery=[a,b]) #show each fringe
         #plt.show()
         if abs(window[a]-window[b])>jump_threshold*np.std(smi_signal):
@@ -59,15 +68,23 @@ full_signal=np.load('/home/stefan/smi_data/target_on.npy').flatten()/(2 ** 12)
 
 reduced_signal = full_signal[int(process_time_bounds[0]* sampling_rate):int(process_time_bounds[1] * sampling_rate)]
 times = np.array(list(range(len(reduced_signal))))/sampling_rate + process_time_bounds[0]
+f, pxx=signal.welch(reduced_signal,sampling_rate,nperseg=100000) #welch's
 
-filtered_signal = signal.medfilt(reduced_signal, 11)#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
+peak=np.argmax(pxx)
+plt.loglog(f,pxx, '-bD',markevery=[peak])
+b, a = signal.butter(4,250,btype='low',fs=sampling_rate)
+filtered = signal.lfilter(b, a, reduced_signal)
+f_filt, pxx_filt=signal.welch(filtered,sampling_rate,nperseg=100000)
+plt.loglog(f_filt,pxx_filt, '-r')
+plt.show()
 
-mz_steps = step_detect.mz_fwt(filtered_signal, n=5)
+filtered_signal = filtered[10000:]#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
+times=times[10000:]
+mz_steps = step_detect.mz_fwt(filtered_signal, n=1)
 
 mz_std = np.std(mz_steps)
 mz_mean = np.mean(mz_steps)
 pos_fringes, neg_fringes = find_inflections_above_under(mz_steps, mz_mean - (std_threshold * mz_std), mz_mean + (std_threshold * mz_std))
-
 
 pos_fringes=jump_magnitude_threshold(pos_fringes,filtered_signal)
 neg_fringes=jump_magnitude_threshold(neg_fringes,filtered_signal)
