@@ -26,11 +26,11 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
-def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.3,window_scale=2000):
+def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.55,window_scale=1000):
     fringes=[]
     window_size=int(window_scale*np.ceil(sampling_rate/100000))
     center=window_size
-    for i in candidate_fringes:
+    for e,i in enumerate(candidate_fringes):
         if i-window_size<0:
             start=0
         else:
@@ -55,31 +55,53 @@ def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1.3,win
         #print(abs(window[a]-window[b])-jump_threshold*np.std(smi_signal))
         #plt.plot(window, '-rD', markevery=[a,b]) #show each fringe
         #plt.show()
-        if abs(window[a]-window[b])>jump_threshold*np.std(smi_signal):
-            fringes.append(i)
+        if abs(window[a]-window[b])>jump_threshold*np.std(smi_signal): #using full signal std deviation, we assume that the majority is composed of fringes
+            if check_proximity(a+(i-window_size),b+(i-window_size),candidate_fringes, e):
+                fringes.append(i)
     return fringes
+
+def check_proximity(a,b,candidate_fringes,i): #checks for fringes of the same sign occurring on the same peak
+    if i==len(candidate_fringes)-1: #last fringe
+        above=False
+        below = a < candidate_fringes[i - 1]
+    elif i==0: #first fringe
+        below=False
+        above = b > candidate_fringes[i + 1]
+    else:
+        below=a<candidate_fringes[i-1]
+        above=b>candidate_fringes[i+1]
+    if below or above:
+        return 0
+    return 1
 
 std_threshold = 2.5
 sampling_rate = 300000
 wavelength=639
-process_time_bounds = [5, 9.1]
+process_time_bounds = [0.4, 2.6]
 
-full_signal=np.load('/home/stefan/smi_data/target_on.npy').flatten()/(2 ** 12)
+full_signal=np.load('/home/stefan/smi_data/14-02-2020/0.01mm_2.npy').flatten()/(2 ** 12) #demo signal works fairly well
+meta=np.load('/home/stefan/smi_data/14-02-2020/0.01mm_2_meta.npy')
+#full_signal=np.load('/home/stefan/smi_data/14-02-2020/2mm_1.npy').flatten()/(2 ** 12)
+#meta=np.load('/home/stefan/smi_data/14-02-2020/2mm_1_meta.npy')
+sampling_rate = int(meta[5]) #read in sampling rate info from metadata
+real_distance=meta[3]
 
 reduced_signal = full_signal[int(process_time_bounds[0]* sampling_rate):int(process_time_bounds[1] * sampling_rate)]
 times = np.array(list(range(len(reduced_signal))))/sampling_rate + process_time_bounds[0]
 f, pxx=signal.welch(reduced_signal,sampling_rate,nperseg=100000) #welch's
 
 peak=np.argmax(pxx)
-plt.loglog(f,pxx, '-bD',markevery=[peak])
-b, a = signal.butter(4,250,btype='low',fs=sampling_rate)
+#plt.loglog(f,pxx, '-bD',markevery=[peak])
+b, a = signal.butter(4,250,btype='low',fs=sampling_rate) #lowpass filter
 filtered = signal.lfilter(b, a, reduced_signal)
 f_filt, pxx_filt=signal.welch(filtered,sampling_rate,nperseg=100000)
-plt.loglog(f_filt,pxx_filt, '-r')
-plt.show()
+#plt.loglog(f_filt,pxx_filt, '-r')
+#plt.show()
 
-filtered_signal = filtered[10000:]#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
-times=times[10000:]
+filtered_signal = filtered[5000:]#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
+times=times[5000:]
+#plt.plot(times,filtered_signal)
+#plt.show()
 mz_steps = step_detect.mz_fwt(filtered_signal, n=1)
 
 mz_std = np.std(mz_steps)
@@ -122,7 +144,7 @@ axs[1].set_ylabel('Multiscale Edges')
 axs[2].set_xlabel('time (s)')
 
 net_fringes=len(pos_fringes) - len(neg_fringes)
-axs[0].set_title('Net travel: {} um'.format(wavelength*net_fringes/1000*0.5))
+axs[0].set_title('Net travel: {} um Actual: {}um'.format(wavelength*net_fringes/1000*0.5,real_distance*1000))
 
 plot.show()
 
