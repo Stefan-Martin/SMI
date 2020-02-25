@@ -4,7 +4,7 @@ import numpy as np
 from scipy import signal
 #import cv2
 
-def find_inflections_above_under(signal, low_threshold, high_threshold, group_threshold = 50):
+def find_inflections_above_under(signal, low_threshold, high_threshold, group_threshold = 30):
 
     def find_max_in_sequences(array):
         sequences = []
@@ -26,7 +26,7 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
-def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,window_scale=20):
+def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1,window_scale=20):
     fringes=[]
     window_size=int(window_scale*np.ceil(sampling_rate/100000))
     center=window_size
@@ -50,17 +50,17 @@ def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=0.08,wi
             fringes.append(i)
     return fringes
 
-std_threshold = 2.5
+std_threshold = 3
 sampling_rate = 300000
 wavelength=639
-process_time_bounds = [5, 9.1]
+process_time_bounds = [8.003, 8.01]
 
-full_signal=np.load('/home/stefan/smi_data/target_on.npy').flatten()/(2 ** 12)
+full_signal=np.load('/home/trevor/smi_data/stage_emi_test/target_on.npy').flatten()/(2 ** 12)
 
 reduced_signal = full_signal[int(process_time_bounds[0]* sampling_rate):int(process_time_bounds[1] * sampling_rate)]
 times = np.array(list(range(len(reduced_signal))))/sampling_rate + process_time_bounds[0]
 
-filtered_signal = signal.medfilt(reduced_signal, 11)#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
+filtered_signal = reduced_signal#cv2.bilateralFilter(np.array(reduced_signal, dtype=np.float32),11, 150, 150).flatten()
 
 mz_steps = step_detect.mz_fwt(filtered_signal, n=5)
 
@@ -83,9 +83,9 @@ max_sig = np.max(filtered_signal)
 min_sig = np.min(filtered_signal)
 axs[0].plot(times, filtered_signal, linewidth = 0.2, color='r')
 for fr in pos_fringes:
-    axs[0].plot([times[fr], times[fr]], [min_sig, max_sig], color='orange')
+    axs[0].plot([times[fr], times[fr]], [min_sig, max_sig], linewidth=0.2, color='orange')
 for fr in neg_fringes:
-    axs[0].plot([times[fr], times[fr]], [min_sig, max_sig], color='blue')
+    axs[0].plot([times[fr], times[fr]], [min_sig, max_sig], linewidth=0.2, color='blue')
 min_sig = np.min(filtered_signal)
 max_sig = np.max(filtered_signal)
 
@@ -108,6 +108,7 @@ net_fringes=len(pos_fringes) - len(neg_fringes)
 axs[0].set_title('Net travel: {} um'.format(wavelength*net_fringes/1000*0.5))
 
 plot.show()
+plt.show()
 
 print("")
 
