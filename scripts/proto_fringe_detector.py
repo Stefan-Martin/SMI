@@ -26,14 +26,23 @@ def find_inflections_above_under(signal, low_threshold, high_threshold, group_th
     return above_infl, below_infl
 
 
+
 def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1,window_scale=20):
     fringes=[]
     window_size=int(window_scale*np.ceil(sampling_rate/100000))
     center=window_size
-    for i in candidate_fringes:
-        window=smi_signal[i-window_size:i+window_size]
+    for e,i in enumerate(candidate_fringes):
+        if i-window_size<0:
+            start=0
+        else:
+            start=i-window_size
+        if i+window_size>len(smi_signal):
+            end=len(smi_signal)
+        else:
+            end=i+window_size
+        window=smi_signal[start:end]
         extrema = np.sign(np.diff(window))
-        extrema[2 * window_size-2] = 1
+        extrema[-1] = 1
         for j,k in enumerate (extrema):
             if extrema[j] == 0:
                 extrema[j]=extrema[j-1] #to avoid treating zero as a sign change we hold the prior value of the derivative
@@ -44,10 +53,12 @@ def jump_magnitude_threshold(candidate_fringes,smi_signal,jump_threshold=1,windo
             continue
         a=peaks_below.max() #index of first peak below
         b=peaks_above.min()  # index of first peak above
+        #print(abs(window[a]-window[b])-jump_threshold*np.std(smi_signal))
         #plt.plot(window, '-rD', markevery=[a,b]) #show each fringe
         #plt.show()
-        if abs(window[a]-window[b])>jump_threshold*np.std(smi_signal):
-            fringes.append(i)
+        if abs(window[a]-window[b])>jump_threshold*np.std(smi_signal): #using full signal std deviation, we assume that the majority is composed of fringes
+            if check_proximity(a+(i-window_size),b+(i-window_size),candidate_fringes, e):
+                fringes.append(i)
     return fringes
 
 std_threshold = 3
@@ -67,7 +78,6 @@ mz_steps = step_detect.mz_fwt(filtered_signal, n=5)
 mz_std = np.std(mz_steps)
 mz_mean = np.mean(mz_steps)
 pos_fringes, neg_fringes = find_inflections_above_under(mz_steps, mz_mean - (std_threshold * mz_std), mz_mean + (std_threshold * mz_std))
-
 
 pos_fringes=jump_magnitude_threshold(pos_fringes,filtered_signal)
 neg_fringes=jump_magnitude_threshold(neg_fringes,filtered_signal)
@@ -105,7 +115,7 @@ axs[1].set_ylabel('Multiscale Edges')
 axs[2].set_xlabel('time (s)')
 
 net_fringes=len(pos_fringes) - len(neg_fringes)
-axs[0].set_title('Net travel: {} um'.format(wavelength*net_fringes/1000*0.5))
+axs[0].set_title('Net travel: {} um Actual: {}um'.format(wavelength*net_fringes/1000*0.5,real_distance*1000))
 
 plot.show()
 plt.show()
