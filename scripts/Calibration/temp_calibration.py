@@ -48,7 +48,7 @@ def main():
 
         velocity=0.005 #mm/s
         accel=0.1 #mm/s^2
-        OD=0.4 #optical density
+        OD=0.5 #optical density
         n_fringes = 100  # fringes to move
         file_index=1 #file index
         sample_rate=60000 #DAQ sample rate
@@ -66,8 +66,7 @@ def main():
             pass
         print('starting recording')
 
-        res = comedi_async.sample_time_async([0],
-                                             [1], sample_rate, 5)
+        res = comedi_async.sample_time_async([0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15], [1,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1], sample_rate, 5)
 
         pidevice.VEL(pidevice.axes[0], velocity)  # set velocity
         pidevice.ACC(pidevice.axes[0], accel)   # set accel
@@ -94,13 +93,13 @@ def main():
         time_bounds = [0.5, 6]
         mother_sig = data[int(time_bounds[0] * sample_rate):int(time_bounds[1] * sample_rate)]
         times = np.array(list(range(len(mother_sig)))) / sample_rate + time_bounds[0]
-        #plt.figure(1)
-        #plt.subplot(211)
+        plt.figure(1)
+        plt.subplot(211)
         plt.plot(data[:,0])
-        #for i in range(2,4):
-         #   plt.plot(times,temp_cal(mother_sig,i))
+        plt.subplot(212)
+        for i in range(2,5):
+            plt.plot(times,temp_cal(mother_sig,i))
         plt.show()
-
         print('done')
 
 if __name__ == '__main__':
