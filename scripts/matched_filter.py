@@ -6,7 +6,7 @@ from scipy import signal
 sampling_rate = 300000
 mother_wavelet_bounds = [5.36,5.46]
 
-full_signal=np.load('/home/trevor/smi_data/stage_emi_test/target_on.npy').flatten()/(2 ** 12)
+full_signal=np.load('target_on.npy').flatten()/(2 ** 12)
 
 # make a mother wavelet
 
@@ -40,7 +40,7 @@ mother_wavelet = mother_wavelet
 plt.plot(mother_wavelet_x, mother_wavelet)
 #plt.show()
 #
-np.save('/home/trevor/smi_data/mother_wavelet.npy', mother_wavelet)
+np.save('mother_wavelet.npy', mother_wavelet)
 
 full_bounds = [6,9]
 full_sig = full_signal[int(full_bounds[0]* sampling_rate):int(full_bounds[1] * sampling_rate)]

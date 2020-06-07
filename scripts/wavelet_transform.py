@@ -7,7 +7,7 @@ import os
 sampling_rate = 300000
 analysis_bounds = [7, 10]
 
-full_signal=np.load('/home/trevor/smi_data/stage_emi_test/target_on.npy').flatten()/(2 ** 12)
+full_signal=np.load('target_on.npy').flatten()/(2 ** 12)
 
 # make a mother wavelet
 
@@ -65,7 +65,7 @@ res = list(res)
 res = list(divide_chunks(res, len(b_vals)))
 
 
-dir = '/home/trevor/smi_data/wavelets/tight_long/'
+dir = '/wavelets/'
 os.makedirs(dir, exist_ok=True)
 np.save(os.path.join(dir,'morlet_wvlet_results.npy'), res)
 np.save(os.path.join(dir,'morlet_wvlet_a_vals.npy'), a_vals)
